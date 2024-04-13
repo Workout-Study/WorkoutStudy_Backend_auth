@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class NaverLoginService {
@@ -61,7 +62,6 @@ public class NaverLoginService {
 
             /* kafka */
             // new user(UserId, nickName, createDate)
-            // login(userID)
 
             return LoginResDto.newUser(accessToken, refreshToken, userId);
 
@@ -73,19 +73,20 @@ public class NaverLoginService {
 
             userTokenRepository.save(findToken);
 
-            /* kafka */
-            // login(userID)
-
             return LoginResDto.existingUser(accessToken, refreshToken, userId);
         }
     }
 
+    @Transactional
     public boolean logout(String accessToken) {
         NaverDeleteTokenVo naverDeleteTokenVo = naverOauthService.deleteToken(accessToken);
 
         if(naverDeleteTokenVo.getError_description() == null || "".equals(naverDeleteTokenVo.getError_description())) {
             return false;
         }
+        Optional<UserToken> userToken = userTokenRepository.findByAccessToken(accessToken);
+        userToken.ifPresent(userTokenRepository::delete);
+
         return true;
     }
 }

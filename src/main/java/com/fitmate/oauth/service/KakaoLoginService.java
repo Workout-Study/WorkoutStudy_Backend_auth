@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class KakaoLoginService {
@@ -78,10 +79,12 @@ public class KakaoLoginService {
 
     public boolean logout(String accessToken) {
         KakaoDeleteTokenVo kakaoDeleteTokenVo = kakaoOauthService.deleteToken(accessToken);
-
         if(kakaoDeleteTokenVo == null || kakaoDeleteTokenVo.getId() == 0) {
             return false;
         }
+
+        Optional<UserToken> userToken = userTokenRepository.findByAccessToken(accessToken);
+        userToken.ifPresent(userTokenRepository::delete);
 
         return true;
     }

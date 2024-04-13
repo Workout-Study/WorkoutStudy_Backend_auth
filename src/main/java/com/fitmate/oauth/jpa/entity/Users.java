@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
