@@ -21,5 +21,8 @@ public class ResultDto {
     public static ResultDto fail() {
         return new ResultDto(500, null);
     }
+    public static ResultDto of(int code, String message) {
+        return new ResultDto(code, message);
+    }
 }
 
