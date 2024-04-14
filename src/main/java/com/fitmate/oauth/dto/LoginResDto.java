@@ -1,4 +1,4 @@
-package com.fitmate.oauth.dto.naver;
+package com.fitmate.oauth.dto;
 
 import com.fitmate.oauth.code.ResultCode;
 import lombok.Getter;

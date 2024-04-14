@@ -1,7 +1,7 @@
 package com.fitmate.oauth.controller;
 
 import com.fitmate.oauth.dto.ResultDto;
-import com.fitmate.oauth.dto.naver.LoginResDto;
+import com.fitmate.oauth.dto.LoginResDto;
 import com.fitmate.oauth.service.KakaoLoginService;
 import com.fitmate.oauth.service.NaverLoginService;
 import com.fitmate.oauth.service.TokenService;
