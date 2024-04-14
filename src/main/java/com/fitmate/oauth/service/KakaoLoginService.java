@@ -5,27 +5,24 @@ import com.fitmate.oauth.jpa.entity.UserToken;
 import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
+import com.fitmate.oauth.kafka.message.UserAddMsg;
+import com.fitmate.oauth.kafka.producer.UserAddKafkaProducer;
 import com.fitmate.oauth.vo.kakao.KakaoDeleteTokenVo;
 import com.fitmate.oauth.vo.kakao.KakaoGetTokenVo;
 import com.fitmate.oauth.vo.kakao.KakaoVerifyTokenVo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class KakaoLoginService {
     private final KakaoOauthService kakaoOauthService;
     private final UsersRepository usersRepository;
     private final UserTokenRepository userTokenRepository;
-
-    @Autowired
-    public KakaoLoginService(KakaoOauthService kakaoOauthService, UsersRepository usersRepository, UserTokenRepository userTokenRepository) {
-        this.kakaoOauthService = kakaoOauthService;
-        this.usersRepository = usersRepository;
-        this.userTokenRepository = userTokenRepository;
-    }
+    private final UserAddKafkaProducer userAddKafkaProducer;
 
     public LoginResDto login(String code) {
         /* 1. 접근 토큰 발급 */
@@ -59,7 +56,7 @@ public class KakaoLoginService {
             userTokenRepository.save(token);
             /* kafka */
             // new user(UserId, nickName, createDate)
-            // login(userID)
+            userAddKafkaProducer.send(UserAddMsg.of(userId, ""));
 
             return LoginResDto.newUser(accessToken, refreshToken, userId);
         } else {
@@ -69,9 +66,6 @@ public class KakaoLoginService {
             findToken.setRefreshToken(refreshToken);
 
             userTokenRepository.save(findToken);
-
-            /* kafka */
-            // login(userID)
 
             return LoginResDto.existingUser(accessToken, refreshToken, userId);
         }

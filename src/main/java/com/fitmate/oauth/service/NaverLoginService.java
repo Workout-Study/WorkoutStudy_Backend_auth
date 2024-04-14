@@ -5,10 +5,12 @@ import com.fitmate.oauth.jpa.entity.UserToken;
 import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
+import com.fitmate.oauth.kafka.message.UserAddMsg;
+import com.fitmate.oauth.kafka.producer.UserAddKafkaProducer;
 import com.fitmate.oauth.vo.naver.NaverDeleteTokenVo;
 import com.fitmate.oauth.vo.naver.NaverGetProfileVo;
 import com.fitmate.oauth.vo.naver.NaverGetTokenVo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,17 +18,12 @@ import java.util.Date;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class NaverLoginService {
     private final NaverOauthService naverOauthService;
     private final UsersRepository usersRepository;
     private final UserTokenRepository userTokenRepository;
-
-    @Autowired
-    public NaverLoginService(NaverOauthService naverOauthService, UsersRepository usersRepository, UserTokenRepository userTokenRepository) {
-        this.naverOauthService = naverOauthService;
-        this.usersRepository = usersRepository;
-        this.userTokenRepository = userTokenRepository;
-    }
+    private final UserAddKafkaProducer userAddKafkaProducer;
 
     @Transactional
     public LoginResDto login(String code) {
@@ -62,6 +59,7 @@ public class NaverLoginService {
 
             /* kafka */
             // new user(UserId, nickName, createDate)
+            userAddKafkaProducer.send(UserAddMsg.of(userId, ""));
 
             return LoginResDto.newUser(accessToken, refreshToken, userId);
 
