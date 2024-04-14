@@ -3,6 +3,8 @@ server:
 
 
 spring:
+  container-name : test
+
   application:
     name: oauth
 

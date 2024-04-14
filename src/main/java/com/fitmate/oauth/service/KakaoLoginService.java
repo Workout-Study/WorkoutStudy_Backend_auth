@@ -6,7 +6,7 @@ import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
 import com.fitmate.oauth.kafka.message.UserAddMsg;
-import com.fitmate.oauth.kafka.producer.UserAddKafkaProducer;
+import com.fitmate.oauth.kafka.producer.UserKafkaProducer;
 import com.fitmate.oauth.vo.kakao.KakaoDeleteTokenVo;
 import com.fitmate.oauth.vo.kakao.KakaoGetTokenVo;
 import com.fitmate.oauth.vo.kakao.KakaoVerifyTokenVo;
@@ -22,7 +22,7 @@ public class KakaoLoginService {
     private final KakaoOauthService kakaoOauthService;
     private final UsersRepository usersRepository;
     private final UserTokenRepository userTokenRepository;
-    private final UserAddKafkaProducer userAddKafkaProducer;
+    private final UserKafkaProducer userKafkaProducer;
 
     public LoginResDto login(String code) {
         /* 1. 접근 토큰 발급 */
@@ -56,7 +56,7 @@ public class KakaoLoginService {
             userTokenRepository.save(token);
             /* kafka */
             // new user(UserId, nickName, createDate)
-            userAddKafkaProducer.send(UserAddMsg.of(userId, ""));
+            userKafkaProducer.handleUserAddEvent(UserAddMsg.of(userId, ""));
 
             return LoginResDto.newUser(accessToken, refreshToken, userId);
         } else {

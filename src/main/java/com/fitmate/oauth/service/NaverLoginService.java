@@ -6,7 +6,7 @@ import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
 import com.fitmate.oauth.kafka.message.UserAddMsg;
-import com.fitmate.oauth.kafka.producer.UserAddKafkaProducer;
+import com.fitmate.oauth.kafka.producer.UserKafkaProducer;
 import com.fitmate.oauth.vo.naver.NaverDeleteTokenVo;
 import com.fitmate.oauth.vo.naver.NaverGetProfileVo;
 import com.fitmate.oauth.vo.naver.NaverGetTokenVo;
@@ -23,7 +23,7 @@ public class NaverLoginService {
     private final NaverOauthService naverOauthService;
     private final UsersRepository usersRepository;
     private final UserTokenRepository userTokenRepository;
-    private final UserAddKafkaProducer userAddKafkaProducer;
+    private final UserKafkaProducer userKafkaProducer;
 
     @Transactional
     public LoginResDto login(String code) {
@@ -59,7 +59,7 @@ public class NaverLoginService {
 
             /* kafka */
             // new user(UserId, nickName, createDate)
-            userAddKafkaProducer.send(UserAddMsg.of(userId, ""));
+            userKafkaProducer.handleUserAddEvent(UserAddMsg.of(userId, ""));
 
             return LoginResDto.newUser(accessToken, refreshToken, userId);
 
