@@ -2,9 +2,10 @@ package com.fitmate.oauth.service;
 
 import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
-import com.fitmate.oauth.kafka.message.UserDelMsg;
-import com.fitmate.oauth.kafka.message.UserUdtMsg;
-import com.fitmate.oauth.kafka.producer.UserKafkaProducer;
+import com.fitmate.oauth.kafka.message.UserDeleteEvent;
+import com.fitmate.oauth.kafka.message.UserUpdateEvent;
+import com.fitmate.oauth.kafka.producer.UserDeleteKafkaProducer;
+import com.fitmate.oauth.kafka.producer.UserUpdateKafkaProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,14 +16,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UsersRepository usersRepository;
-    private final UserKafkaProducer userKafkaProducer;
+    private final UserUpdateKafkaProducer userUpdateKafkaProducer;
+    private final UserDeleteKafkaProducer userDeleteKafkaProducer;
 
     @Transactional
     public boolean deleteUser(long userId) {
         usersRepository.deleteById(userId);
 
         //kafka deleteUser(userId)
-        userKafkaProducer.handleUserDelEvent(UserDelMsg.of(userId));
+        userDeleteKafkaProducer.handleEvent(UserDeleteEvent.of(userId));
 
         return true;
     }
@@ -37,7 +39,7 @@ public class UserService {
         });
 
         //kafka updateUserNickName (userId, userNickname)
-        userKafkaProducer.handleUserUdtEvent(UserUdtMsg.of(userId, nickname));
+        userUpdateKafkaProducer.handleEvent(UserUpdateEvent.of(userId, nickname));
 
         return true;
     }

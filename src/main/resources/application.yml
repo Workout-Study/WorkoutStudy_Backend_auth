@@ -2,6 +2,7 @@ server:
   port: 8080
 
 spring:
+  container-name: ${CONTAINER_NAME}
   application:
     name: auth-service
 
@@ -17,12 +18,18 @@ spring:
       ddl-auto: update
 
   kafka:
-    bootstrap-servers: kafka-1:19092
-
-eureka:
-  instance:
-    instance-id: ${spring.cloud.client.ip-address}:${server.port}
-
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+    bootstrap-servers: kafka-1:29092
+    topic-config:
+      user-create-event:
+        topic-name: user-create-event
+      user-delete-event:
+        topic-name: user-delete-event
+      user-update-event:
+        topic-name: user-update-event
+#eureka:
+#  instance:
+#    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+#
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
