@@ -1,8 +1,8 @@
 version: '3.8'
 
 networks:
-  fit_mate:
-    driver: bridge
+  fit-mate:
+    external: true
 
 services:
   postgresql-auth:
