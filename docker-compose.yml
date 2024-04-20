@@ -18,7 +18,9 @@ services:
       - fit_mate
 
   auth-service:
-    image: auth-service:latest
+    environment:
+      CONTAINER_NAME: auth-service
+    build: .
     container_name: auth-service
     restart: on-failure
     depends_on:
