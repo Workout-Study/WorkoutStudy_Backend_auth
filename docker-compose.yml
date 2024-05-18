@@ -1,5 +1,5 @@
 networks:
-  fit_mate:
+  fit-mate:
     external: true
 
 services:
