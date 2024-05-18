@@ -7,8 +7,6 @@ import jakarta.persistence.Id;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
-import java.util.Date;
-
 @Entity
 @Getter
 @Setter
@@ -16,13 +14,11 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @DynamicInsert
-public class Users {
+public class Users extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    long userId;
+    Long userId;
     String oauthId;
     String oauthType;
     String nickName;
-    Date createDate;
-    Date updateDate;
 }

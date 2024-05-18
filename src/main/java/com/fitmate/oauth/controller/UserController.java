@@ -1,5 +1,6 @@
 package com.fitmate.oauth.controller;
 
+import com.fitmate.oauth.controller.responses.GetUserInfoResponse;
 import com.fitmate.oauth.dto.ResultDto;
 import com.fitmate.oauth.service.TokenService;
 import com.fitmate.oauth.service.UserService;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,5 +59,11 @@ public class UserController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResultDto.fail());
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<GetUserInfoResponse> getUserInfo(@RequestParam long userId) {
+        GetUserInfoResponse getUserInfoResponse = userService.getUserInfo(userId);
+        return ResponseEntity.ok(getUserInfoResponse);
     }
 }

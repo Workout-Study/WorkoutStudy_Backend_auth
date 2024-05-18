@@ -40,8 +40,6 @@ public class KakaoLoginService {
             Users newUser = Users.builder()
                     .oauthId(kakaoUserId)
                     .oauthType("KAKAO")
-                    .createDate(new Date())
-                    .updateDate(new Date())
                     .build();
 
             Users savedUser = usersRepository.save(newUser);
@@ -56,7 +54,7 @@ public class KakaoLoginService {
             userTokenRepository.save(token);
             /* kafka */
             // new user(UserId, nickName, createDate)
-            userCreateKafkaProducer.handleEvent(UserCreateEvent.of(userId, ""));
+            userCreateKafkaProducer.handleEvent(UserCreateEvent.of(userId));
 
             return LoginResDto.newUser(accessToken, refreshToken, userId);
         } else {

@@ -42,8 +42,6 @@ public class NaverLoginService {
             Users newUser = Users.builder()
                     .oauthId(naverId)
                     .oauthType("NAVER")
-                    .createDate(new Date())
-                    .updateDate(new Date())
                     .build();
 
             Users savedUser = usersRepository.save(newUser);
@@ -59,7 +57,7 @@ public class NaverLoginService {
 
             /* kafka */
             // new user(UserId, nickName, createDate)
-            userCreateKafkaProducer.handleEvent(UserCreateEvent.of(userId, ""));
+            userCreateKafkaProducer.handleEvent(UserCreateEvent.of(userId));
 
             return LoginResDto.newUser(accessToken, refreshToken, userId);
 
