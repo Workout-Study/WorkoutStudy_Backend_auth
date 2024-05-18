@@ -4,8 +4,8 @@ FROM openjdk:17-jdk
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# 호스트의 oauth-0.0.1-SNAPSHOT.jar 파일을 컨테이너의 /app 디렉토리로 복사
-COPY oauth-0.0.1-SNAPSHOT.jar /app/oauth-0.0.1-SNAPSHOT.jar
+# 호스트의 target/oauth-0.0.1-SNAPSHOT.jar 파일을 컨테이너의 /app 디렉토리로 복사
+COPY target/oauth-0.0.1-SNAPSHOT.jar /app/oauth-0.0.1-SNAPSHOT.jar
 
 # 포트 8080을 외부로 노출
 EXPOSE 18080
