@@ -1,7 +1,5 @@
-version: '3.8'
-
 networks:
-  fit-mate:
+  fit_mate:
     external: true
 
 services:
@@ -18,9 +16,11 @@ services:
       - fit_mate
 
   auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       CONTAINER_NAME: auth-service
-    build: .
     container_name: auth-service
     restart: on-failure
     depends_on:
