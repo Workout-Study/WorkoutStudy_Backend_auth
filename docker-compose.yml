@@ -13,7 +13,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
     networks:
-      - fit_mate
+      - fit-mate
 
   auth-service:
     build:
@@ -30,4 +30,4 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
     networks:
-      - fit_mate
+      - fit-mate
