@@ -8,8 +8,8 @@ services:
     container_name: postgresql-auth
     environment:
       POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: cksrb0402
+      POSTGRES_USER: auth
+      POSTGRES_PASSWORD: auth
     volumes:
       - /etc/localtime:/etc/localtime:ro
     networks:
