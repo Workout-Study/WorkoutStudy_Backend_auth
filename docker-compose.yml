@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: auth
-      POSTGRES_PASSWORD: auth
+      POSTGRES_PASSWORD: auth1!
     volumes:
       - /etc/localtime:/etc/localtime:ro
     networks:
@@ -21,6 +21,9 @@ services:
       dockerfile: Dockerfile
     environment:
       CONTAINER_NAME: auth-service
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql-auth:5432/postgres
+      SPRING_DATASOURCE_USERNAME: auth
+      SPRING_DATASOURCE_PASSWORD: auth1!
     container_name: auth-service
     restart: on-failure
     depends_on:

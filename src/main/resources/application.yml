@@ -9,7 +9,7 @@ spring:
   datasource:
     url: jdbc:postgresql://postgresql-auth:5432/postgres
     username: auth
-    password: auth
+    password: auth1!
     driver-class-name: org.postgresql.Driver
 
   jpa:
