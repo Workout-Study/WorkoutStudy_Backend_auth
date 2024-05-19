@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"com.fitmate.oauth.jpa.entity"})
+@EnableJpaRepositories(basePackages = {"com.fitmate.oauth.jpa.repository"})
 public class JpaTransactionConfig {
 	private final LocalContainerEntityManagerFactoryBean entityManagerFactory;
 
