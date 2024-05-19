@@ -17,14 +17,14 @@ import jakarta.persistence.EntityManagerFactory;
 @EnableTransactionManagement
 public class JpaConfig {
 
-	// @Bean
-	// public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
-	// 	LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
-	// 	factoryBean.setDataSource(dataSource);
-	// 	factoryBean.setPackagesToScan("com.fitmate.oauth.jpa.entity"); // 엔티티 클래스 패키지
-	// 	factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-	// 	return factoryBean;
-	// }
+	@Bean
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+		factoryBean.setDataSource(dataSource);
+		factoryBean.setPackagesToScan("com.fitmate.oauth.jpa.entity"); // 엔티티 클래스 패키지
+		factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+		return factoryBean;
+	}
 
 	@Bean
 	@Primary

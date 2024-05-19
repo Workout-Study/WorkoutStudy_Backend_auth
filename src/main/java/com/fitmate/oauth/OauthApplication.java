@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@EnableJpaRepositories
+@EnableJpaRepositories(basePackages = "com.fitmate.oauth.jpa.repository")
 @EnableTransactionManagement
 @EnableJpaAuditing
 public class OauthApplication {
