@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -13,6 +14,7 @@ import org.hibernate.annotations.DynamicInsert;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@Table(name = "users")
 @DynamicInsert
 public class Users extends BaseEntity{
     @Id

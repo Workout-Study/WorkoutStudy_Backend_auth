@@ -12,6 +12,7 @@ import com.fitmate.oauth.vo.kakao.KakaoGetTokenVo;
 import com.fitmate.oauth.vo.kakao.KakaoVerifyTokenVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class KakaoLoginService {
     private final UserTokenRepository userTokenRepository;
     private final UserCreateKafkaProducer userCreateKafkaProducer;
 
+    @Transactional
     public LoginResDto login(String code) {
         /* 1. 접근 토큰 발급 */
         KakaoGetTokenVo kakaoGetTokenVo = kakaoOauthService.getToken(code);
@@ -69,6 +71,7 @@ public class KakaoLoginService {
         }
     }
 
+    @Transactional
     public boolean logout(String accessToken) {
         KakaoDeleteTokenVo kakaoDeleteTokenVo = kakaoOauthService.deleteToken(accessToken);
         if(kakaoDeleteTokenVo == null || kakaoDeleteTokenVo.getId() == 0) {
