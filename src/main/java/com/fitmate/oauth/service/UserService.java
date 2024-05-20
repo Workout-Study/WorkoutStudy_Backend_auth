@@ -1,5 +1,6 @@
 package com.fitmate.oauth.service;
 
+import com.fitmate.oauth.controller.requests.UpdateNicknameRequest;
 import com.fitmate.oauth.controller.responses.GetUserInfoResponse;
 import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
@@ -25,7 +26,6 @@ public class UserService {
     @Transactional
     public boolean deleteUser(long userId) {
         usersRepository.deleteById(userId);
-
         //kafka deleteUser(userId)
         userDeleteKafkaProducer.handleEvent(UserDeleteEvent.of(userId));
 
@@ -33,17 +33,16 @@ public class UserService {
     }
 
     @Transactional
-    public boolean updateUserNickname(long  userId, String nickname) {
-        Optional<Users> usersOptional = usersRepository.findById(userId);
+    public boolean updateUserNickname(UpdateNicknameRequest request) {
+        Optional<Users> usersOptional = usersRepository.findById(request.getUserId());
 
         usersOptional.ifPresent(users -> {
-            users.setNickName(nickname);
-            usersRepository.save(users);
+            users.setNickname(request.getNickname());
+            // usersRepository.save(users);
+
+            //kafka updateUserNickName (userId, userNickname)
+            userUpdateKafkaProducer.handleEvent(UserUpdateEvent.of(usersOptional.get().getUserId(), usersOptional.get().getNickName()));
         });
-
-        //kafka updateUserNickName (userId, userNickname)
-        userUpdateKafkaProducer.handleEvent(UserUpdateEvent.of(userId, nickname));
-
         return true;
     }
 

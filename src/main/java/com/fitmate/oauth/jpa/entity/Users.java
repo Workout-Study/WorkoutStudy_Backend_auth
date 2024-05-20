@@ -10,7 +10,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
-@Setter
+@Setter(AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
@@ -23,4 +23,8 @@ public class Users extends BaseEntity{
     String oauthId;
     String oauthType;
     String nickName;
+
+    public void setNickname(String nickname) {
+        setNickname(nickname);
+    }
 }
