@@ -1,16 +1,13 @@
 package com.fitmate.oauth.controller;
 
-import com.fitmate.oauth.dto.AuthLoginParams;
-import com.fitmate.oauth.dto.KakaoLoginReqDto;
+import com.fitmate.oauth.dto.authLogin.KakaoLoginReqDto;
 import com.fitmate.oauth.dto.ResultDto;
-import com.fitmate.oauth.dto.LoginResDto;
+import com.fitmate.oauth.dto.authLogin.LoginResDto;
 import com.fitmate.oauth.service.KakaoLoginService;
 import com.fitmate.oauth.service.NaverLoginService;
 import com.fitmate.oauth.service.OAuthLoginService;
 import com.fitmate.oauth.service.TokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
