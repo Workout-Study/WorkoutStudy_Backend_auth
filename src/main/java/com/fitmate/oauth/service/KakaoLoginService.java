@@ -14,13 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class KakaoLoginService {
-    private final KakaoOauthService kakaoOauthService;
+    private final KakaoOAuthService kakaoOAuthService;
     private final UsersRepository usersRepository;
     private final UserTokenRepository userTokenRepository;
     private final UserCreateKafkaProducer userCreateKafkaProducer;
@@ -28,15 +27,15 @@ public class KakaoLoginService {
     @Transactional
     public LoginResDto login(String code) {
         /* 1. 접근 토큰 발급 */
-        KakaoGetTokenVo kakaoGetTokenVo = kakaoOauthService.getToken(code);
+        KakaoGetTokenVo kakaoGetTokenVo = kakaoOAuthService.getToken(code);
         String accessToken = kakaoGetTokenVo.getAccess_token();
         String refreshToken = kakaoGetTokenVo.getRefresh_token();
 
         /* 사용자 프로필 조회 */
-        KakaoVerifyTokenVo kakaoVerifyTokenVo = kakaoOauthService.verifyToken(accessToken);
+        KakaoVerifyTokenVo kakaoVerifyTokenVo = kakaoOAuthService.verifyToken(accessToken);
         String kakaoUserId = Long.toString(kakaoVerifyTokenVo.getId());
 
-        Users findUser = usersRepository.findByOauthIdAndOauthType(kakaoUserId, "KAKAO");
+        Users findUser = usersRepository.findByOauthIdAndOauthType(kakaoUserId, "KAKAO").get();
 
         if(findUser == null) { // 신규 사용자
             Users newUser = Users.builder()
@@ -73,7 +72,7 @@ public class KakaoLoginService {
 
     @Transactional
     public boolean logout(String accessToken) {
-        KakaoDeleteTokenVo kakaoDeleteTokenVo = kakaoOauthService.deleteToken(accessToken);
+        KakaoDeleteTokenVo kakaoDeleteTokenVo = kakaoOAuthService.deleteToken(accessToken);
         if(kakaoDeleteTokenVo == null || kakaoDeleteTokenVo.getId() == 0) {
             return false;
         }

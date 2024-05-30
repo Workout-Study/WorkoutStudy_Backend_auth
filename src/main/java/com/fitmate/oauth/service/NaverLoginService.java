@@ -36,7 +36,7 @@ public class NaverLoginService {
         NaverGetProfileVo naverGetProfileVo = naverOauthService.getUserProfile(accessToken);
         String naverId = naverGetProfileVo.getResponse().getId();
 
-        Users findUser = usersRepository.findByOauthIdAndOauthType(naverId, "NAVER");
+        Users findUser = usersRepository.findByOauthIdAndOauthType(naverId, "NAVER").get();
 
         if(findUser == null) { // 신규 사용자
             Users newUser = Users.builder()
