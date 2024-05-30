@@ -1,9 +1,11 @@
-package com.fitmate.oauth.dto;
+package com.fitmate.oauth.dto.authLogin;
 
 import com.fitmate.oauth.code.ResultCode;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class LoginResDto {
     private final ResultCode resultCode;
     private final String accessToken;
