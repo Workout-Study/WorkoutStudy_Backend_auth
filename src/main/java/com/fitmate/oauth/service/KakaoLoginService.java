@@ -1,6 +1,6 @@
 package com.fitmate.oauth.service;
 
-import com.fitmate.oauth.dto.LoginResDto;
+import com.fitmate.oauth.dto.authLogin.LoginResDto;
 import com.fitmate.oauth.jpa.entity.UserToken;
 import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UserTokenRepository;

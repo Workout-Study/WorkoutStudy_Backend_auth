@@ -18,11 +18,11 @@ import org.hibernate.annotations.DynamicInsert;
 @DynamicInsert
 public class Users extends BaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    Long userId;
-    String oauthId;
-    String oauthType;
-    String nickName;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
+    private String oauthId;
+    private String oauthType;
+    private String nickName;
 
     public void setNickname(String nickname) {
         setNickname(nickname);

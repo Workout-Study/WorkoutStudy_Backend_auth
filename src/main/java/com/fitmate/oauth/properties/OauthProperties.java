@@ -17,4 +17,5 @@ public class OauthProperties {
     public static final String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
     public static final String KAKAO_VERIFY_TOKEN_URL = "https://kapi.kakao.com/v1/user/access_token_info";
     public static final String KAKAO_DELETE_TOKEN_URL = "https://kapi.kakao.com/v1/user/logout";
+    public static final String KAKAO_LOGOUT_URL = "https://kauth.kakao.com/oauth/logout";
 }
