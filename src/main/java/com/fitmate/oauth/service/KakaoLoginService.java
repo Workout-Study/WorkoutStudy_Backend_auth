@@ -19,7 +19,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class KakaoLoginService {
-    private final KakaoOAuthService kakaoOAuthService;
+    private final KakaoOauthService kakaoOAuthService;
     private final UsersRepository usersRepository;
     private final UserTokenRepository userTokenRepository;
     private final UserCreateKafkaProducer userCreateKafkaProducer;

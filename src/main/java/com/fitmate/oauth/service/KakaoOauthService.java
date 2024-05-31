@@ -14,7 +14,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
-public class KakaoOAuthService {
+public class KakaoOauthService {
 
     /**
      * 접근 토큰 발급
