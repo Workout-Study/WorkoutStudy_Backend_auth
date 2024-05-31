@@ -16,9 +16,10 @@ services:
       - fit-mate
 
   auth-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: kimtaeheon/auth-service:latest
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
     environment:
       CONTAINER_NAME: auth-service
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql-auth:5432/postgres
