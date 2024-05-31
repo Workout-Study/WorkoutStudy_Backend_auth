@@ -67,7 +67,8 @@ public class LoginController {
 //    }
 
     @GetMapping("/auth/login/kakao")
-    public ResponseEntity<LoginResDto> kakaoLogin(@RequestBody KakaoLoginReqDto params) {
+    public ResponseEntity<LoginResDto> kakaoLogin(@RequestParam String accessToken) {
+        KakaoLoginReqDto params = new KakaoLoginReqDto(accessToken);
         LoginResDto result = oAuthLoginService.authLogin(params);
         return ResponseEntity.ok(result);
     }
