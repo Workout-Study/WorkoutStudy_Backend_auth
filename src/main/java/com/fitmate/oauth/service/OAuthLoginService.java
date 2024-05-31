@@ -75,7 +75,8 @@ public class OAuthLoginService {
                 .build();
         usersRepository.save(users);
         // kafka message produce
-        userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId()));
+        // TODO : kafka message 바꿔야 함. /user-info
+        // userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId()));
         // JWT 토큰 발급
         String jwtAccessToken = JwtTokenUtils.generateToken(oauthId, secretKey, accessTokenExpiredTimeMs);
         String jwtRefreshToken = JwtTokenUtils.generateToken(oauthId, secretKey, refreshTokenExpiredTimeMs);
