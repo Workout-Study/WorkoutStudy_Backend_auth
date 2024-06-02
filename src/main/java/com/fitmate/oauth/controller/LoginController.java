@@ -3,6 +3,8 @@ package com.fitmate.oauth.controller;
 import com.fitmate.oauth.dto.authLogin.KakaoLoginReqDto;
 import com.fitmate.oauth.dto.ResultDto;
 import com.fitmate.oauth.dto.authLogin.LoginResDto;
+import com.fitmate.oauth.dto.authLogout.AuthLogoutParams;
+import com.fitmate.oauth.dto.authLogout.KakaoLogoutReqDto;
 import com.fitmate.oauth.service.KakaoLoginService;
 import com.fitmate.oauth.service.NaverLoginService;
 import com.fitmate.oauth.service.OAuthLoginService;
@@ -66,16 +68,22 @@ public class LoginController {
 //        return ResponseEntity.ok(result);
 //    }
 
+    /**
+     * 카카오 로그인
+     * @param code 인가 코드
+     * @return ResponseEntity
+     */
     @GetMapping("/auth/login/kakao")
-    public ResponseEntity<LoginResDto> kakaoLogin(@RequestParam String accessToken) {
-        KakaoLoginReqDto params = new KakaoLoginReqDto(accessToken);
+    public ResponseEntity<LoginResDto> kakaoLogin(@RequestParam String code) {
+        KakaoLoginReqDto params = new KakaoLoginReqDto(code);
         LoginResDto result = oAuthLoginService.authLogin(params);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/auth/logout/kakao")
     public ResponseEntity<ResultDto> kakaoLogout(@RequestParam String accessToken) {
-        boolean result = kakaoLoginService.logout(accessToken);
+        KakaoLogoutReqDto params = new KakaoLogoutReqDto(accessToken);
+        boolean result = oAuthLoginService.authLogout(params);
         if(result) {
             return ResponseEntity.ok(ResultDto.success());
         }
@@ -84,6 +92,18 @@ public class LoginController {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ResultDto.fail());
     }
+
+//    @GetMapping("/auth/logout/kakao")
+//    public ResponseEntity<ResultDto> kakaoLogout(@RequestParam String accessToken) {
+//        boolean result = kakaoLoginService.logout(accessToken);
+//        if(result) {
+//            return ResponseEntity.ok(ResultDto.success());
+//        }
+//
+//        return ResponseEntity
+//                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body(ResultDto.fail());
+//    }
 
     @GetMapping("/auth/token/valid")
     public ResponseEntity<ResultDto> validToken(String accessToken) {

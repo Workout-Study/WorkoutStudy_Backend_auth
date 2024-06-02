@@ -1,21 +1,28 @@
 package com.fitmate.oauth.dto.authApi;
 
 import com.fitmate.oauth.dto.authLogin.AuthLoginParams;
-import com.fitmate.oauth.dto.authLogout.AuthLogoutParams;
 import com.fitmate.oauth.dto.authLogin.AuthVerifyTokenVo;
 import com.fitmate.oauth.dto.authLogin.KakaoTokens;
+import com.fitmate.oauth.dto.authLogout.KakaoLogoutResDto;
 import com.fitmate.oauth.properties.OauthProperties;
 import com.fitmate.oauth.vo.AuthProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class KakaoApiClient implements AuthApiClient {
 
     private static final String GRANT_TYPE = "authorization_code";
@@ -67,14 +74,25 @@ public class KakaoApiClient implements AuthApiClient {
     }
 
     @Override
-    public void logout(AuthLogoutParams params) {
-        String url = OauthProperties.KAKAO_LOGOUT_URL;
-
-        // TODO : Logout Redirect URL 프론트에서 생성 필요
-        String uri = UriComponentsBuilder.fromHttpUrl(url)
+    public boolean logout(String authUserId) {
+        // String LOGOUT_URL = OauthProperties.KAKAO_LOGOUT_URL + "?client_id=" + clientId + "&redirect_uri=http://localhost:8080/oauth/logout";
+        String url = UriComponentsBuilder.fromHttpUrl(OauthProperties.KAKAO_LOGOUT_URL)
                 .queryParam("client_id", clientId)
-                .queryParam("logout_redirect_uri", "https://fitmate.com/oauth")
+                .queryParam("logout_redirect_uri", "http://localhost:8080/oauth")
+                .build()
                 .toUriString();
-        restTemplate.getForObject(uri, String.class);
+        HttpHeaders headers = new HttpHeaders();
+        // headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("target_id_type", "user_id");
+        body.add("target_id", authUserId);
+
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<KakaoLogoutResDto> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, KakaoLogoutResDto.class);
+        log.info("response = {}", response);
+        return authUserId.equals(Objects.requireNonNull(response.getBody()).getId());
     }
+
 }

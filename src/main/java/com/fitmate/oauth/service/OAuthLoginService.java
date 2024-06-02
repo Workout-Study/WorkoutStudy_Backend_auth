@@ -5,17 +5,23 @@ import com.fitmate.oauth.dto.authLogin.AuthLoginParams;
 import com.fitmate.oauth.dto.authLogin.AuthVerifyTokenVo;
 import com.fitmate.oauth.dto.authApi.KakaoApiClient;
 import com.fitmate.oauth.dto.authLogin.LoginResDto;
+import com.fitmate.oauth.dto.authLogout.AuthLogoutParams;
+import com.fitmate.oauth.jpa.entity.UserToken;
 import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
 import com.fitmate.oauth.kafka.message.UserCreateEvent;
 import com.fitmate.oauth.kafka.producer.UserCreateKafkaProducer;
 import com.fitmate.oauth.util.JwtTokenUtils;
+import com.fitmate.oauth.vo.kakao.KakaoDeleteTokenVo;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
@@ -24,6 +30,7 @@ import java.util.Optional;
 @Slf4j
 public class OAuthLoginService {
 
+    private final RestTemplate restTemplate;
     @Value("${jwt.secret-key}")
     private String secretKey;
 
@@ -57,6 +64,7 @@ public class OAuthLoginService {
             String jwtRefreshToken = JwtTokenUtils.generateToken(oauthId, secretKey, refreshTokenExpiredTimeMs);
             log.info("user가 DB에 있는 경우");
             log.info("jwtAccessToken = {}, jwtRefreshToken = {}", jwtAccessToken, jwtRefreshToken);
+
             return LoginResDto.builder()
                     .resultCode(ResultCode.SUCCESS)
                     .accessToken(jwtAccessToken)
@@ -73,13 +81,19 @@ public class OAuthLoginService {
                 .oauthType(params.authProvider().name())
                 .nickName("")
                 .build();
-        usersRepository.save(users);
+        Users savedUser = usersRepository.save(users);
         // kafka message produce
         // TODO : kafka message 바꿔야 함. /user-info
         // userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId()));
         // JWT 토큰 발급
         String jwtAccessToken = JwtTokenUtils.generateToken(oauthId, secretKey, accessTokenExpiredTimeMs);
         String jwtRefreshToken = JwtTokenUtils.generateToken(oauthId, secretKey, refreshTokenExpiredTimeMs);
+        // UserToken 정보 저장 TODO : Redis로 변경(?)
+//        UserToken findToken = userTokenRepository.findByUserId(savedUser.getUserId());
+//        findToken.setAccessToken(jwtAccessToken);
+//        findToken.setRefreshToken(jwtRefreshToken);
+//        userTokenRepository.save(findToken);
+
         log.info("user가 DB에 없는 경우");
         log.info("jwtAccessToken = {}, jwtRefreshToken = {}", jwtAccessToken, jwtRefreshToken);
         return LoginResDto.builder()
@@ -89,5 +103,23 @@ public class OAuthLoginService {
                 .userId(users.getUserId())
                 .isNewUser(1)
                 .build();
+    }
+
+    @Transactional
+    public boolean authLogout(AuthLogoutParams params) {
+        String accessToken = params.makeBody().getFirst("accessToken");
+        log.info("accessToken = {}", accessToken);
+        // accessToken에서 authId 가져오기
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey.getBytes())
+                .parseClaimsJws(accessToken)
+                .getBody();
+        String authUserId = claims.get("authUserId", String.class);
+        log.info("authUserId = {}", authUserId);
+        // UserToken 제거
+//        Optional<UserToken> userToken = userTokenRepository.findByAccessToken(accessToken);
+//        userToken.ifPresent(userTokenRepository::delete);
+        // authId를 kakao 쪽에 전송하여 로그아웃
+        return kakaoApiClient.logout(authUserId);
     }
 }

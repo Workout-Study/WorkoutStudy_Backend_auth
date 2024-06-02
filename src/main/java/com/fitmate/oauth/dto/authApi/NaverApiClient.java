@@ -62,7 +62,7 @@ public class NaverApiClient implements AuthApiClient {
     }
 
     @Override
-    public void logout(AuthLogoutParams params) {
-
+    public boolean logout(String accessToken) {
+        return false;
     }
 }
