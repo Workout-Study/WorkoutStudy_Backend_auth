@@ -2,7 +2,8 @@ package com.fitmate.oauth.kafka.producer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fitmate.oauth.kafka.message.UserDeleteEvent;
+import com.fitmate.oauth.kafka.message.UserCreateEvent;
+import com.fitmate.oauth.kafka.message.UserInfoEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,21 +14,21 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 
-//@Service
+@Service
 @Slf4j
-public class UserDeleteKafkaProducer {
+public class UserInfoKafkaProducer {
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final ObjectMapper objectMapper;
-    public UserDeleteKafkaProducer(KafkaTemplate<String, byte[]> kafkaTemplate, ObjectMapper objectMapper) {
+    public UserInfoKafkaProducer(KafkaTemplate<String, byte[]> kafkaTemplate, ObjectMapper objectMapper) {
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
     }
     @Value("${spring.container-name}")
     private String containerName;
-    
-    @Value("${spring.kafka.topic-config.user-delete-event.topic-name}")
+
+    @Value("${spring.kafka.topic-config.user-info-event.topic-name}")
     private String topicName;
-    public void handleEvent(UserDeleteEvent event) {
+    public void handleEvent(UserInfoEvent event) {
         try {
             byte[] serializedEvent = objectMapper.writeValueAsBytes(event);
 

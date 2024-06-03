@@ -23,12 +23,14 @@ spring:
   kafka:
     bootstrap-servers: kafka-1:9092
     topic-config:
-      user-create-event:
-        topic-name: user-create-event
-      user-delete-event:
-        topic-name: user-delete-event
-      user-update-event:
-        topic-name: user-update-event
+      user-info-event:
+        topic-name: user-info-event
+#      user-create-event:
+#        topic-name: user-create-event
+#      user-delete-event:
+#        topic-name: user-delete-event
+#      user-update-event:
+#        topic-name: user-update-event
 eureka:
   instance:
     instance-id: ${spring.cloud.client.ip-address}:${server.port}

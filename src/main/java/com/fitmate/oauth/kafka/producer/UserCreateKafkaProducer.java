@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
-@Service
+//@Service
 @Slf4j
 public class UserCreateKafkaProducer {
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
