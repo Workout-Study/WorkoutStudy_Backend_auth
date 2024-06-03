@@ -61,18 +61,6 @@ public class LoginController {
      * @param code 인가 코드
      * @return ResponseEntity
      */
-//    @GetMapping("/auth/login/kakao")
-//    public ResponseEntity<LoginResDto> kakaoLogin(@RequestParam String code) {
-//        LoginResDto result = kakaoLoginService.login(code);
-//
-//        return ResponseEntity.ok(result);
-//    }
-
-    /**
-     * 카카오 로그인
-     * @param code 인가 코드
-     * @return ResponseEntity
-     */
     @GetMapping("/auth/login/kakao")
     public ResponseEntity<LoginResDto> kakaoLogin(@RequestParam String code) {
         KakaoLoginReqDto params = new KakaoLoginReqDto(code);
@@ -92,18 +80,6 @@ public class LoginController {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ResultDto.fail());
     }
-
-//    @GetMapping("/auth/logout/kakao")
-//    public ResponseEntity<ResultDto> kakaoLogout(@RequestParam String accessToken) {
-//        boolean result = kakaoLoginService.logout(accessToken);
-//        if(result) {
-//            return ResponseEntity.ok(ResultDto.success());
-//        }
-//
-//        return ResponseEntity
-//                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .body(ResultDto.fail());
-//    }
 
     @GetMapping("/auth/token/valid")
     public ResponseEntity<ResultDto> validToken(String accessToken) {
