@@ -20,6 +20,7 @@ public class UserToken {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     long userTokenId;
     long userId;
+    String authAccessToken;
     String accessToken;
     String refreshToken;
 }

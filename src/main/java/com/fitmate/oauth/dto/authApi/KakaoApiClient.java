@@ -13,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -64,7 +65,7 @@ public class KakaoApiClient implements AuthApiClient {
         String url = OauthProperties.KAKAO_VERIFY_TOKEN_URL;
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer "+ accessToken);
+        httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
         HttpEntity<?> request = new HttpEntity<>(httpHeaders);
 
@@ -76,13 +77,27 @@ public class KakaoApiClient implements AuthApiClient {
     @Override
     public boolean logout(String authUserId) {
         // String LOGOUT_URL = OauthProperties.KAKAO_LOGOUT_URL + "?client_id=" + clientId + "&redirect_uri=http://localhost:8080/oauth/logout";
-        String url = UriComponentsBuilder.fromHttpUrl(OauthProperties.KAKAO_LOGOUT_URL)
-                .queryParam("client_id", clientId)
-                .queryParam("logout_redirect_uri", "http://localhost:8080/oauth")
-                .build()
-                .toUriString();
+//        String url = UriComponentsBuilder.fromHttpUrl(OauthProperties.KAKAO_LOGOUT_URL)
+//                .queryParam("client_id", clientId)
+//                .queryParam("logout_redirect_uri", "http://localhost:8080/oauth")
+//                .build()
+//                .toUriString();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//        headers.add("Authorization", "KakaoAK " + OauthProperties.KAKAO_ADMIN_KEY);
+//
+//        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+//        body.add("target_id_type", "user_id");
+//        body.add("target_id", Long.parseLong(authUserId));
+//
+//        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+//
+//        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+//        log.info("response = {}", response);
+//        return true;
         HttpHeaders headers = new HttpHeaders();
-        // headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        headers.add("Authorization", "KakaoAK c1de961d08e41eb160c907ded02df374");
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("target_id_type", "user_id");
@@ -90,9 +105,27 @@ public class KakaoApiClient implements AuthApiClient {
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<KakaoLogoutResDto> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, KakaoLogoutResDto.class);
-        log.info("response = {}", response);
-        return authUserId.equals(Objects.requireNonNull(response.getBody()).getId());
+        try {
+            ResponseEntity<KakaoLogoutResDto> response = restTemplate.exchange(
+                    "https://kapi.kakao.com/v1/user/logout", HttpMethod.POST, requestEntity, KakaoLogoutResDto.class);
+            log.info("response = {}", response);
+
+            KakaoLogoutResDto responseBody = response.getBody();
+            if (responseBody == null) {
+                log.error("Response body is null");
+                return false;
+            }
+
+            return authUserId.equals(responseBody.getId());
+        } catch (HttpClientErrorException e) {
+            log.error("HttpClientErrorException occurred: {}", e.getMessage());
+            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                log.error("Bad request: {}", e.getResponseBodyAsString());
+            }
+        } catch (Exception e) {
+            log.error("An error occurred: {}", e.getMessage());
+        }
+        return false;
     }
 
 }

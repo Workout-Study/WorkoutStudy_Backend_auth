@@ -64,7 +64,12 @@ public class OAuthLoginService {
             String jwtRefreshToken = JwtTokenUtils.generateToken(oauthId, secretKey, refreshTokenExpiredTimeMs);
             log.info("user가 DB에 있는 경우");
             log.info("jwtAccessToken = {}, jwtRefreshToken = {}", jwtAccessToken, jwtRefreshToken);
-
+            // UserToken 수정
+            UserToken findToken = userTokenRepository.findByUserId(optionalUsers.get().getUserId());
+            findToken.setAuthAccessToken(accessToken);
+            findToken.setAccessToken(jwtAccessToken);
+            findToken.setRefreshToken(jwtRefreshToken);
+            userTokenRepository.save(findToken);
             return LoginResDto.builder()
                     .resultCode(ResultCode.SUCCESS)
                     .accessToken(jwtAccessToken)
@@ -88,11 +93,13 @@ public class OAuthLoginService {
         // JWT 토큰 발급
         String jwtAccessToken = JwtTokenUtils.generateToken(oauthId, secretKey, accessTokenExpiredTimeMs);
         String jwtRefreshToken = JwtTokenUtils.generateToken(oauthId, secretKey, refreshTokenExpiredTimeMs);
-        // UserToken 정보 저장 TODO : Redis로 변경(?)
-//        UserToken findToken = userTokenRepository.findByUserId(savedUser.getUserId());
-//        findToken.setAccessToken(jwtAccessToken);
-//        findToken.setRefreshToken(jwtRefreshToken);
-//        userTokenRepository.save(findToken);
+        // UserToken 정보 저장
+        UserToken userToken = UserToken.builder()
+                .userId(savedUser.getUserId())
+                .authAccessToken(accessToken)
+                .accessToken(jwtAccessToken)
+                .refreshToken(jwtRefreshToken).build();
+        userTokenRepository.save(userToken);
 
         log.info("user가 DB에 없는 경우");
         log.info("jwtAccessToken = {}, jwtRefreshToken = {}", jwtAccessToken, jwtRefreshToken);
@@ -108,6 +115,8 @@ public class OAuthLoginService {
     @Transactional
     public boolean authLogout(AuthLogoutParams params) {
         String accessToken = params.makeBody().getFirst("accessToken");
+        Optional<UserToken> byAccessToken = userTokenRepository.findByAccessToken(accessToken);
+        String authAccessToken = byAccessToken.get().getAuthAccessToken();
         log.info("accessToken = {}", accessToken);
         // accessToken에서 authId 가져오기
         Claims claims = Jwts.parser()
