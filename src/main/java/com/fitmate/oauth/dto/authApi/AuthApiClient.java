@@ -11,5 +11,5 @@ public interface AuthApiClient {
 
     AuthVerifyTokenVo verifyAccessToken(String accessToken);
 
-    boolean logout(String accessToken);
+    String logout(String accessToken);
 }

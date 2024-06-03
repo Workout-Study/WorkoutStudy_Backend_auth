@@ -115,7 +115,7 @@ public class OAuthLoginService {
     }
 
     @Transactional
-    public boolean authLogout(AuthLogoutParams params) {
+    public String authLogout(AuthLogoutParams params) {
         String accessToken = params.makeBody().getFirst("accessToken");
         log.info("accessToken = {}", accessToken);
         // accessToken에서 authId 가져오기

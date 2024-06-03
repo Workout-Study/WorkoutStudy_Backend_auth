@@ -75,7 +75,7 @@ public class KakaoApiClient implements AuthApiClient {
     }
 
     @Override
-    public boolean logout(String authUserId) {
+    public String logout(String authUserId) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
@@ -95,10 +95,12 @@ public class KakaoApiClient implements AuthApiClient {
             KakaoLogoutResDto responseBody = response.getBody();
             if (responseBody == null) {
                 log.error("Response body is null");
-                return false;
+                return null;
             }
 
-            return authUserId.equals(responseBody.getId());
+            if (authUserId.equals(responseBody.getId())) {
+                return authUserId;
+            }
         } catch (HttpClientErrorException e) {
             log.error("HttpClientErrorException occurred: {}", e.getMessage());
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
@@ -107,7 +109,7 @@ public class KakaoApiClient implements AuthApiClient {
         } catch (Exception e) {
             log.error("An error occurred: {}", e.getMessage());
         }
-        return false;
+        return null;
     }
 
 }

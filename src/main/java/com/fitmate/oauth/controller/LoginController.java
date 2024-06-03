@@ -71,14 +71,14 @@ public class LoginController {
     @GetMapping("/auth/logout/kakao")
     public ResponseEntity<ResultDto> kakaoLogout(@RequestParam String accessToken) {
         KakaoLogoutReqDto params = new KakaoLogoutReqDto(accessToken);
-        boolean result = oAuthLoginService.authLogout(params);
-        if(result) {
-            return ResponseEntity.ok(ResultDto.success());
+        String result = oAuthLoginService.authLogout(params);
+        if(result == null) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResultDto.fail());
         }
+        return ResponseEntity.ok(ResultDto.of(200, result));
 
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ResultDto.fail());
     }
 
     @GetMapping("/auth/token/valid")
