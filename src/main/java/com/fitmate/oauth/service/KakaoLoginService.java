@@ -5,8 +5,6 @@ import com.fitmate.oauth.jpa.entity.UserToken;
 import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
-import com.fitmate.oauth.kafka.message.UserCreateEvent;
-import com.fitmate.oauth.kafka.producer.UserCreateKafkaProducer;
 import com.fitmate.oauth.vo.kakao.KakaoDeleteTokenVo;
 import com.fitmate.oauth.vo.kakao.KakaoGetTokenVo;
 import com.fitmate.oauth.vo.kakao.KakaoVerifyTokenVo;
@@ -22,7 +20,7 @@ public class KakaoLoginService {
     private final KakaoOauthService kakaoOAuthService;
     private final UsersRepository usersRepository;
     private final UserTokenRepository userTokenRepository;
-    private final UserCreateKafkaProducer userCreateKafkaProducer;
+    // private final UserCreateKafkaProducer userCreateKafkaProducer;
 
     @Transactional
     public LoginResDto login(String code) {
@@ -55,7 +53,7 @@ public class KakaoLoginService {
             userTokenRepository.save(token);
             /* kafka */
             // new user(UserId, nickName, createDate)
-            userCreateKafkaProducer.handleEvent(UserCreateEvent.of(userId));
+            // userCreateKafkaProducer.handleEvent(UserCreateEvent.of(userId));
 
             return LoginResDto.newUser(accessToken, refreshToken, userId);
         } else {

@@ -11,7 +11,8 @@ import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
 import com.fitmate.oauth.kafka.message.UserCreateEvent;
-import com.fitmate.oauth.kafka.producer.UserCreateKafkaProducer;
+import com.fitmate.oauth.kafka.message.UserInfoEvent;
+import com.fitmate.oauth.kafka.producer.UserInfoKafkaProducer;
 import com.fitmate.oauth.util.JwtTokenUtils;
 import com.fitmate.oauth.vo.kakao.KakaoDeleteTokenVo;
 import io.jsonwebtoken.Claims;
@@ -44,7 +45,7 @@ public class OAuthLoginService {
     private final UsersRepository usersRepository;
     private final UserTokenRepository userTokenRepository;
     private final UserService userService;
-    private final UserCreateKafkaProducer userCreateKafkaProducer;
+    private final UserInfoKafkaProducer userInfoKafkaProducer;
 
     @Transactional
     public LoginResDto authLogin(AuthLoginParams params) {
@@ -90,8 +91,7 @@ public class OAuthLoginService {
                 .build();
         Users savedUser = usersRepository.save(users);
         // kafka message produce
-        // TODO : kafka message 바꿔야 함. /user-info
-        // userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId()));
+        userInfoKafkaProducer.handleEvent(UserInfoEvent.of(users.getUserId(), ""));
         // JWT 토큰 발급
         String jwtAccessToken = JwtTokenUtils.generateToken(oauthId, secretKey, accessTokenExpiredTimeMs);
         String jwtRefreshToken = JwtTokenUtils.generateToken(oauthId, secretKey, refreshTokenExpiredTimeMs);

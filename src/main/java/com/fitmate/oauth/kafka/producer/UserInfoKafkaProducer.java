@@ -2,7 +2,6 @@ package com.fitmate.oauth.kafka.producer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fitmate.oauth.kafka.message.UserCreateEvent;
 import com.fitmate.oauth.kafka.message.UserInfoEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -28,6 +27,7 @@ public class UserInfoKafkaProducer {
 
     @Value("${spring.kafka.topic-config.user-info-event.topic-name}")
     private String topicName;
+
     public void handleEvent(UserInfoEvent event) {
         try {
             byte[] serializedEvent = objectMapper.writeValueAsBytes(event);
@@ -38,7 +38,6 @@ public class UserInfoKafkaProducer {
                     Instant.now().toEpochMilli(), // timestamp
                     containerName, // key
                     serializedEvent
-//                    List.of(new RecordHeader("containerName", containerName.getBytes())) // custom header 사용시 가능
             );
 
             CompletableFuture<SendResult<String, byte[]>> future = kafkaTemplate.send(producerRecord);
