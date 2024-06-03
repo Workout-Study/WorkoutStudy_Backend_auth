@@ -65,11 +65,13 @@ public class OAuthLoginService {
             log.info("user가 DB에 있는 경우");
             log.info("jwtAccessToken = {}, jwtRefreshToken = {}", jwtAccessToken, jwtRefreshToken);
             // UserToken 수정
-            UserToken findToken = userTokenRepository.findByUserId(optionalUsers.get().getUserId());
-            findToken.setAuthAccessToken(accessToken);
-            findToken.setAccessToken(jwtAccessToken);
-            findToken.setRefreshToken(jwtRefreshToken);
-            userTokenRepository.save(findToken);
+            // UserToken 정보 저장
+            UserToken userToken = UserToken.builder()
+                    .userId(userId)
+                    .authAccessToken(accessToken)
+                    .accessToken(jwtAccessToken)
+                    .refreshToken(jwtRefreshToken).build();
+            userTokenRepository.save(userToken);
             return LoginResDto.builder()
                     .resultCode(ResultCode.SUCCESS)
                     .accessToken(jwtAccessToken)
@@ -115,8 +117,6 @@ public class OAuthLoginService {
     @Transactional
     public boolean authLogout(AuthLogoutParams params) {
         String accessToken = params.makeBody().getFirst("accessToken");
-        Optional<UserToken> byAccessToken = userTokenRepository.findByAccessToken(accessToken);
-        String authAccessToken = byAccessToken.get().getAuthAccessToken();
         log.info("accessToken = {}", accessToken);
         // accessToken에서 authId 가져오기
         Claims claims = Jwts.parser()
@@ -126,8 +126,8 @@ public class OAuthLoginService {
         String authUserId = claims.get("authUserId", String.class);
         log.info("authUserId = {}", authUserId);
         // UserToken 제거
-//        Optional<UserToken> userToken = userTokenRepository.findByAccessToken(accessToken);
-//        userToken.ifPresent(userTokenRepository::delete);
+        Optional<UserToken> userToken = userTokenRepository.findByAccessToken(accessToken);
+        userToken.ifPresent(userTokenRepository::delete);
         // authId를 kakao 쪽에 전송하여 로그아웃
         return kakaoApiClient.logout(authUserId);
     }

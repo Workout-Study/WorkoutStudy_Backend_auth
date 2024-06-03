@@ -76,25 +76,7 @@ public class KakaoApiClient implements AuthApiClient {
 
     @Override
     public boolean logout(String authUserId) {
-        // String LOGOUT_URL = OauthProperties.KAKAO_LOGOUT_URL + "?client_id=" + clientId + "&redirect_uri=http://localhost:8080/oauth/logout";
-//        String url = UriComponentsBuilder.fromHttpUrl(OauthProperties.KAKAO_LOGOUT_URL)
-//                .queryParam("client_id", clientId)
-//                .queryParam("logout_redirect_uri", "http://localhost:8080/oauth")
-//                .build()
-//                .toUriString();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//        headers.add("Authorization", "KakaoAK " + OauthProperties.KAKAO_ADMIN_KEY);
-//
-//        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-//        body.add("target_id_type", "user_id");
-//        body.add("target_id", Long.parseLong(authUserId));
-//
-//        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-//
-//        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-//        log.info("response = {}", response);
-//        return true;
+
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
         headers.add("Authorization", "KakaoAK c1de961d08e41eb160c907ded02df374");
