@@ -70,7 +70,11 @@ public class LoginController {
 
     @GetMapping("/auth/logout/kakao")
     public ResponseEntity<ResultDto> kakaoLogout(@RequestParam String accessToken) {
-        KakaoLogoutReqDto params = new KakaoLogoutReqDto(accessToken);
+        String jwtToken = accessToken;
+        if (accessToken.contains(" ")) {
+            jwtToken = accessToken.split(" ")[1];
+        }
+        KakaoLogoutReqDto params = new KakaoLogoutReqDto(jwtToken);
         String result = oAuthLoginService.authLogout(params);
         if(result == null) {
             return ResponseEntity
