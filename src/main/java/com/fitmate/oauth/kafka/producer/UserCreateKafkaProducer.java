@@ -12,12 +12,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
-//@Service
+@Service
 @Slf4j
 public class UserCreateKafkaProducer {
-    private final KafkaTemplate<String, byte[]> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     private final ObjectMapper objectMapper;
-    public UserCreateKafkaProducer(KafkaTemplate<String, byte[]> kafkaTemplate, ObjectMapper objectMapper) {
+
+    public UserCreateKafkaProducer(KafkaTemplate<String, Object> kafkaTemplate, ObjectMapper objectMapper) {
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
     }
@@ -26,11 +27,12 @@ public class UserCreateKafkaProducer {
 
     @Value("${spring.kafka.topic-config.user-create-event.topic-name}")
     private String topicName;
+
     public void handleEvent(UserCreateEvent event) {
         try {
             byte[] serializedEvent = objectMapper.writeValueAsBytes(event);
 
-            ProducerRecord<String, byte[]> producerRecord = new ProducerRecord<>(
+            ProducerRecord<String, Object> producerRecord = new ProducerRecord<>(
                     topicName,
                     null, // partition
                     Instant.now().toEpochMilli(), // timestamp
@@ -39,7 +41,7 @@ public class UserCreateKafkaProducer {
 //                    List.of(new RecordHeader("containerName", containerName.getBytes())) // custom header 사용시 가능
             );
 
-            CompletableFuture<SendResult<String, byte[]>> future = kafkaTemplate.send(producerRecord);
+            CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(producerRecord);
 
             future.whenComplete((result, ex) -> {
                 if (ex != null) {

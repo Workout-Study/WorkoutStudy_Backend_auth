@@ -13,6 +13,7 @@ import lombok.Value;
 public class GetUserInfoResponse {
 	Long userId;
 	String nickname;
-	LocalDateTime createdAt;
-	LocalDateTime updatedAt;
+	Boolean state;
+	String createdAt;
+	String updatedAt;
 }
