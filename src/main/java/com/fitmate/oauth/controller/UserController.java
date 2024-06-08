@@ -31,45 +31,45 @@ public class UserController {
     private final UserService userService;
     private final TokenService tokenService;
 
-//    @PutMapping("/update/nickname")
-//    @Operation(summary = "사용자 nickname 생성 및 업데이트", description = "nickname 이 null 이면 에러 발생")
-//    public ResponseEntity<ResultDto> createNickname(@RequestBody UpdateNicknameRequest request, HttpServletRequest httpServletRequest) {
-//        String accessToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-//        if(!tokenService.isTokenValid(accessToken)) {
-//            return ResponseEntity
-//                    .status(HttpStatus.UNAUTHORIZED)
-//                    .body(ResultDto.of(401, "UNAUTHORIZED. check accessToken"));
-//        }
-//
-//        if(userService.updateUserNickname(request)) {
-//            return ResponseEntity.ok(ResultDto.success());
-//        } else {
-//            return ResponseEntity
-//                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(ResultDto.fail());
-//        }
-//    }
+    @PutMapping("/update/nickname")
+    @Operation(summary = "사용자 nickname 생성 및 업데이트", description = "nickname 이 null 이면 에러 발생")
+    public ResponseEntity<ResultDto> createNickname(@RequestBody UpdateNicknameRequest request, HttpServletRequest httpServletRequest) {
+        String accessToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        if(!tokenService.isTokenValid(accessToken)) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ResultDto.of(401, "UNAUTHORIZED. check accessToken"));
+        }
+
+        if(userService.updateUserNickname(request)) {
+            return ResponseEntity.ok(ResultDto.success());
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResultDto.fail());
+        }
+    }
 
     // @PutMapping("/update/nickname")
     // public ResponseEntity<ResultDto> updateNickname(@Re)
 
-//    @DeleteMapping("/delete")
-//    public ResponseEntity<ResultDto> deleteUser(@RequestParam long userId, HttpServletRequest httpServletRequest) {
-//        String accessToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-//        if(!tokenService.isTokenValid(accessToken)) {
-//            return ResponseEntity
-//                    .status(HttpStatus.UNAUTHORIZED)
-//                    .body(ResultDto.of(401, "UNAUTHORIZED. check accessToken"));
-//        }
-//
-//        if(userService.deleteUser(userId)) {
-//            return ResponseEntity.ok(ResultDto.success());
-//        } else {
-//            return ResponseEntity
-//                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(ResultDto.fail());
-//        }
-//    }
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResultDto> deleteUser(@RequestParam long userId, HttpServletRequest httpServletRequest) {
+        String accessToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        if(!tokenService.isTokenValid(accessToken)) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ResultDto.of(401, "UNAUTHORIZED. check accessToken"));
+        }
+
+        if(userService.deleteUser(userId)) {
+            return ResponseEntity.ok(ResultDto.success());
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResultDto.fail());
+        }
+    }
 
     @GetMapping("/user-info")
     public ResponseEntity<GetUserInfoResponse> getUserInfo(@RequestParam long userId) {

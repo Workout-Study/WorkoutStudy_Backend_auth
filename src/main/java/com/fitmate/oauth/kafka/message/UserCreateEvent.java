@@ -9,11 +9,13 @@ import java.time.Instant;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class UserCreateEvent {
-    private final long userId;
-    // private final String nickname;
-    // private final Instant createDate;
+    private final Long userId;
+    private final String nickname;
+    private final Boolean state;
+    private final String createdAt;
+    private final String updatedAt;
 
-    public static UserCreateEvent of(long userId) {
-        return new UserCreateEvent(userId);
+    public static UserCreateEvent of(Long userId, String nickname, Boolean state, String createdAt, String updatedAt) {
+        return new UserCreateEvent(userId, nickname, state, createdAt, updatedAt);
     }
 }

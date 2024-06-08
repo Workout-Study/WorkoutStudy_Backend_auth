@@ -21,12 +21,12 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   kafka:
-    bootstrap-servers: kafka-1:9092
+    bootstrap-servers: localhost:9092
     topic-config:
       user-info-event:
         topic-name: user-info-event
-#      user-create-event:
-#        topic-name: user-create-event
+      user-create-event:
+        topic-name: user-create-event
 #      user-delete-event:
 #        topic-name: user-delete-event
 #      user-update-event:
