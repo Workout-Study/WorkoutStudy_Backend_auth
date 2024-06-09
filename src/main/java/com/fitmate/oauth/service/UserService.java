@@ -2,7 +2,9 @@ package com.fitmate.oauth.service;
 
 import com.fitmate.oauth.controller.requests.UpdateNicknameRequest;
 import com.fitmate.oauth.controller.responses.GetUserInfoResponse;
+import com.fitmate.oauth.jpa.entity.UserToken;
 import com.fitmate.oauth.jpa.entity.Users;
+import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
 import com.fitmate.oauth.kafka.producer.UserInfoKafkaProducer;
 import com.fitmate.oauth.service.mapper.UserMapper;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UsersRepository usersRepository;
+    private final UserTokenRepository tokenRepository;
     private final UserInfoKafkaProducer userInfoKafkaProducer;
 
     @Transactional
@@ -32,8 +35,9 @@ public class UserService {
     }
 
     @Transactional
-    public boolean updateUserNickname(UpdateNicknameRequest request) {
-        Optional<Users> usersOptional = usersRepository.findById(request.getUserId());
+    public boolean updateUserNickname(UpdateNicknameRequest request, String accessToken) {
+        Optional<UserToken> byAccessToken = tokenRepository.findByAccessToken(accessToken.split(" ")[1]);
+        Optional<Users> usersOptional = usersRepository.findById(byAccessToken.get().getUserId());
 
         usersOptional.ifPresent(users -> {
             users.setNickname(request.getNickname());

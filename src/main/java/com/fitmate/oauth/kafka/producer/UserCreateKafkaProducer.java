@@ -30,14 +30,15 @@ public class UserCreateKafkaProducer {
 
     public void handleEvent(UserCreateEvent event) {
         try {
-            byte[] serializedEvent = objectMapper.writeValueAsBytes(event);
-
+            // byte[] serializedEvent = objectMapper.writeValueAsBytes(event);
+            // log.info("serializedEvent: {}", serializedEvent);
+            log.info("event: {}", event);
             ProducerRecord<String, Object> producerRecord = new ProducerRecord<>(
                     topicName,
                     null, // partition
                     Instant.now().toEpochMilli(), // timestamp
                     containerName, // key
-                    serializedEvent
+                    event
 //                    List.of(new RecordHeader("containerName", containerName.getBytes())) // custom header 사용시 가능
             );
 
@@ -50,7 +51,7 @@ public class UserCreateKafkaProducer {
                     log.info("이벤트 전송 성공 = [{}] 전송된 이벤트 = [{}]", event, result.getRecordMetadata().offset());
                 }
             });
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             log.error("이벤트를 직렬화 할 수 없습니다 = [{}]: {}", event, e.getMessage());
         }
     }
