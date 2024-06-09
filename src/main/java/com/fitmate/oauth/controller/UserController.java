@@ -41,7 +41,7 @@ public class UserController {
                     .body(ResultDto.of(401, "UNAUTHORIZED. check accessToken"));
         }
 
-        if(userService.updateUserNickname(request)) {
+        if(userService.updateUserNickname(request, accessToken)) {
             return ResponseEntity.ok(ResultDto.success());
         } else {
             return ResponseEntity
@@ -53,23 +53,23 @@ public class UserController {
     // @PutMapping("/update/nickname")
     // public ResponseEntity<ResultDto> updateNickname(@Re)
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<ResultDto> deleteUser(@RequestParam long userId, HttpServletRequest httpServletRequest) {
-        String accessToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        if(!tokenService.isTokenValid(accessToken)) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(ResultDto.of(401, "UNAUTHORIZED. check accessToken"));
-        }
-
-        if(userService.deleteUser(userId)) {
-            return ResponseEntity.ok(ResultDto.success());
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ResultDto.fail());
-        }
-    }
+//    @DeleteMapping("/delete")
+//    public ResponseEntity<ResultDto> deleteUser(@RequestParam long userId, HttpServletRequest httpServletRequest) {
+//        String accessToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+//        if(!tokenService.isTokenValid(accessToken)) {
+//            return ResponseEntity
+//                    .status(HttpStatus.UNAUTHORIZED)
+//                    .body(ResultDto.of(401, "UNAUTHORIZED. check accessToken"));
+//        }
+//
+//        if(userService.deleteUser(userId)) {
+//            return ResponseEntity.ok(ResultDto.success());
+//        } else {
+//            return ResponseEntity
+//                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(ResultDto.fail());
+//        }
+//    }
 
     @GetMapping("/user-info")
     public ResponseEntity<GetUserInfoResponse> getUserInfo(@RequestParam long userId) {

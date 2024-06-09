@@ -17,7 +17,8 @@ public class TokenService {
 
     @Transactional
     public boolean isTokenValid(String accessToken) {
-        Optional<UserToken> token = userTokenRepository.findByAccessToken(accessToken);
+        String splitedAccessToken = accessToken.split(" ")[1];
+        Optional<UserToken> token = userTokenRepository.findByAccessToken(splitedAccessToken);
         return token.isPresent();
     }
 }

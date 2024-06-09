@@ -1,16 +1,13 @@
 package com.fitmate.oauth.controller.requests;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import lombok.*;
 
 @Getter
-@Value
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateNicknameRequest {
-	Long userId;
+	// Long userId;
 	@NotNull
 	String nickname;
-
 }
