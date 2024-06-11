@@ -3,6 +3,7 @@ package com.fitmate.oauth.controller;
 import com.fitmate.oauth.dto.authLogin.KakaoLoginReqDto;
 import com.fitmate.oauth.dto.ResultDto;
 import com.fitmate.oauth.dto.authLogin.LoginResDto;
+import com.fitmate.oauth.dto.authLogin.NaverLoginReqDto;
 import com.fitmate.oauth.dto.authLogout.AuthLogoutParams;
 import com.fitmate.oauth.dto.authLogout.KakaoLogoutReqDto;
 import com.fitmate.oauth.service.KakaoLoginService;
@@ -39,8 +40,8 @@ public class LoginController {
      */
     @GetMapping("/auth/login/naver")
     public ResponseEntity<LoginResDto> naverLogin(@RequestParam String code) {
-        LoginResDto result = naverLoginService.login(code);
-
+        NaverLoginReqDto params = new NaverLoginReqDto(code);
+        LoginResDto result = oAuthLoginService.naverAuthLogin(params);
         return ResponseEntity.ok(result);
     }
 
@@ -64,7 +65,7 @@ public class LoginController {
     @GetMapping("/auth/login/kakao")
     public ResponseEntity<LoginResDto> kakaoLogin(@RequestParam String code) {
         KakaoLoginReqDto params = new KakaoLoginReqDto(code);
-        LoginResDto result = oAuthLoginService.authLogin(params);
+        LoginResDto result = oAuthLoginService.kakaoAuthLogin(params);
         return ResponseEntity.ok(result);
     }
 

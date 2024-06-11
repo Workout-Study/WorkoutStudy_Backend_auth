@@ -19,4 +19,5 @@ public class OauthProperties {
     public static final String KAKAO_DELETE_TOKEN_URL = "https://kapi.kakao.com/v1/user/logout";
     public static final String KAKAO_LOGOUT_URL = "https://kauth.kakao.com/oauth/logout";
     public static final String KAKAO_ADMIN_KEY = "c1de961d08e41eb160c907ded02df374";
+    public static final String NAVER_VERIFY_TOKEN_URL = "https://openapi.naver.com/v1/nid/me";
 }
