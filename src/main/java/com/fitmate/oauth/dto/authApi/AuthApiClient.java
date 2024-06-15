@@ -9,7 +9,7 @@ public interface AuthApiClient {
 
     String requestAccessToken(AuthLoginParams params);
 
-    AuthVerifyTokenVo verifyAccessToken(String accessToken);
+    // AuthVerifyTokenVo verifyAccessToken(String accessToken);
 
-    String logout(String accessToken);
+    // String logout(String accessToken);
 }

@@ -60,7 +60,6 @@ public class KakaoApiClient implements AuthApiClient {
         return response.getAccessToken();
     }
 
-    @Override
     public AuthVerifyTokenVo verifyAccessToken(String accessToken) {
         String url = OauthProperties.KAKAO_VERIFY_TOKEN_URL;
 
@@ -74,7 +73,6 @@ public class KakaoApiClient implements AuthApiClient {
         return responseEntity.getBody();
     }
 
-    @Override
     public String logout(String authUserId) {
 
         HttpHeaders headers = new HttpHeaders();

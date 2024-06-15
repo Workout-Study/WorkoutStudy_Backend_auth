@@ -4,13 +4,14 @@ import com.fitmate.oauth.dto.authLogin.AuthLoginParams;
 import com.fitmate.oauth.dto.authLogout.AuthLogoutParams;
 import com.fitmate.oauth.dto.authLogin.AuthVerifyTokenVo;
 import com.fitmate.oauth.dto.authLogin.NaverTokens;
+import com.fitmate.oauth.properties.OauthProperties;
 import com.fitmate.oauth.vo.AuthProvider;
+import com.fitmate.oauth.vo.naver.NaverGetProfileVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -56,13 +57,21 @@ public class NaverApiClient implements AuthApiClient {
         return response.getAccessToken();
     }
 
-    @Override
-    public AuthVerifyTokenVo verifyAccessToken(String accessToken) {
-        return null;
+    public NaverGetProfileVo verifyAccessToken(String accessToken) {
+        String url = OauthProperties.NAVER_VERIFY_TOKEN_URL;
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+
+        HttpEntity<?> request = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<NaverGetProfileVo> responseEntity = restTemplate.exchange(url, HttpMethod.GET, request, NaverGetProfileVo.class);
+        return responseEntity.getBody();
     }
 
-    @Override
-    public String logout(String accessToken) {
-        return null;
+    public String logout(String authUserId) {
+        // 네이버는 로그아웃 기능이 없음 -> token 삭제로 대체
+        return authUserId;
     }
+
 }
