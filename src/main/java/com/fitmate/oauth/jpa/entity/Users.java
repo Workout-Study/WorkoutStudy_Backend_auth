@@ -23,6 +23,7 @@ public class Users extends BaseEntity{
     private String oauthId;
     private String oauthType;
     private String nickName;
+    private String pushToken;
     private Boolean state;
 
     public void setNickname(String nickname) {
