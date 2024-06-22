@@ -39,9 +39,9 @@ public class LoginController {
      * @return ResponseEntity
      */
     @GetMapping("/auth/login/naver")
-    public ResponseEntity<LoginResDto> naverLogin(@RequestParam String code) {
+    public ResponseEntity<LoginResDto> naverLogin(@RequestParam String code, @RequestParam String fcmToken) {
         NaverLoginReqDto params = new NaverLoginReqDto(code);
-        LoginResDto result = oAuthLoginService.naverAuthLogin(params);
+        LoginResDto result = oAuthLoginService.naverAuthLogin(params, fcmToken);
         return ResponseEntity.ok(result);
     }
 
@@ -63,9 +63,9 @@ public class LoginController {
      * @return ResponseEntity
      */
     @GetMapping("/auth/login/kakao")
-    public ResponseEntity<LoginResDto> kakaoLogin(@RequestParam String code) {
+    public ResponseEntity<LoginResDto> kakaoLogin(@RequestParam String code, @RequestParam String fcmToken) {
         KakaoLoginReqDto params = new KakaoLoginReqDto(code);
-        LoginResDto result = oAuthLoginService.kakaoAuthLogin(params);
+        LoginResDto result = oAuthLoginService.kakaoAuthLogin(params, fcmToken);
         return ResponseEntity.ok(result);
     }
 

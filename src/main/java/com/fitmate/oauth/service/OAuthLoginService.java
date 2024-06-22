@@ -54,7 +54,7 @@ public class OAuthLoginService {
     private final UserInfoKafkaProducer userInfoKafkaProducer;
 
     @Transactional
-    public LoginResDto kakaoAuthLogin(AuthLoginParams params) {
+    public LoginResDto kakaoAuthLogin(AuthLoginParams params, String fcmToken) {
         // authorizeToken으로 accessToken 발급받아서 accessToken이 유효한지 판단
         String accessToken = kakaoApiClient.requestAccessToken(params);
         log.info("authorizeToken으로 발급받은 kakao accessToken = {}", accessToken);
@@ -85,6 +85,7 @@ public class OAuthLoginService {
                     .refreshToken(jwtRefreshToken)
                     .userId(userId)
                     .isNewUser(0)
+                    .fcmToken(fcmToken)
                     .build();
         }
         // 데이터베이스에 없는 유저일 때 -> 새롭게 유저를 만들어서 DB에 저장, JWT 토큰 발급
@@ -95,6 +96,7 @@ public class OAuthLoginService {
                 .oauthType(params.authProvider().name())
                 .nickName("")
                 .state(false)
+                .fcmToken(fcmToken)
                 .build();
         Users savedUser = usersRepository.save(users);
         // kafka User-create-message produce
@@ -120,11 +122,12 @@ public class OAuthLoginService {
                 .refreshToken(jwtRefreshToken)
                 .userId(users.getUserId())
                 .isNewUser(1)
+                .fcmToken(fcmToken)
                 .build();
     }
 
     @Transactional
-    public LoginResDto naverAuthLogin(NaverLoginReqDto params) {
+    public LoginResDto naverAuthLogin(NaverLoginReqDto params, String fcmToken) {
         // authorizeToken으로 accessToken 발급받아서 accessToken이 유효한지 판단
         String accessToken = naverApiClient.requestAccessToken(params);
         log.info("authorizeToken으로 발급받은 naver accessToken = {}", accessToken);
@@ -155,6 +158,7 @@ public class OAuthLoginService {
                     .refreshToken(jwtRefreshToken)
                     .userId(userId)
                     .isNewUser(0) // 기존 유저
+                    .fcmToken(fcmToken)
                     .build();
         }
         // 데이터베이스에 없는 유저일 때 -> 새롭게 유저를 만들어서 DB에 저장, JWT 토큰 발급
@@ -165,6 +169,7 @@ public class OAuthLoginService {
                 .oauthType(params.authProvider().name())
                 .nickName("")
                 .state(false)
+                .fcmToken(fcmToken)
                 .build();
         Users savedUser = usersRepository.save(users);
         // kafka User-create-message produce
@@ -190,6 +195,7 @@ public class OAuthLoginService {
                 .refreshToken(jwtRefreshToken)
                 .userId(users.getUserId())
                 .isNewUser(1) // 새로운 유저임
+                .fcmToken(fcmToken)
                 .build();
     }
 
