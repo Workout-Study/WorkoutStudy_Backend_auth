@@ -11,4 +11,4 @@ COPY target/oauth-0.0.1-SNAPSHOT.jar /app/oauth-0.0.1-SNAPSHOT.jar
 EXPOSE 18080
 
 # 스프링 부트 애플리케이션 실행
-CMD ["java", "-jar", "oauth-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-Xms512m", "-Xmx1024m", "-XX:MaxMetaspaceSize=256m", "-jar", "oauth-0.0.1-SNAPSHOT.jar"]
