@@ -20,5 +20,18 @@ public class NaverLoginService {
     private final NaverOauthService naverOauthService;
     private final UsersRepository usersRepository;
     private final UserTokenRepository userTokenRepository;
+    //private final UserCreateKafkaProducer userCreateKafkaProducer;
 
+    @Transactional
+    public boolean logout(String accessToken) {
+        NaverDeleteTokenVo naverDeleteTokenVo = naverOauthService.deleteToken(accessToken);
+
+        if(naverDeleteTokenVo.getError_description() == null || "".equals(naverDeleteTokenVo.getError_description())) {
+            return false;
+        }
+        Optional<UserToken> userToken = userTokenRepository.findByAccessToken(accessToken);
+        userToken.ifPresent(userTokenRepository::delete);
+
+        return true;
+    }
 }

@@ -6,6 +6,7 @@ import com.fitmate.oauth.dto.authLogin.LoginResDto;
 import com.fitmate.oauth.dto.authLogin.NaverLoginReqDto;
 import com.fitmate.oauth.dto.authLogout.AuthLogoutParams;
 import com.fitmate.oauth.dto.authLogout.KakaoLogoutReqDto;
+import com.fitmate.oauth.dto.authLogout.NaverLogoutReqDto;
 import com.fitmate.oauth.service.KakaoLoginService;
 import com.fitmate.oauth.service.NaverLoginService;
 import com.fitmate.oauth.service.OAuthLoginService;
@@ -47,14 +48,18 @@ public class LoginController {
 
     @GetMapping("/auth/logout/naver")
     public ResponseEntity<ResultDto> naverLogout(@RequestParam String accessToken) {
-        boolean result = naverLoginService.logout(accessToken);
-        if(result) {
-            return ResponseEntity.ok(ResultDto.success());
+        String jwtToken = accessToken;
+        if (accessToken.contains(" ")) {
+            jwtToken = accessToken.split(" ")[1];
         }
-
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ResultDto.fail());
+        NaverLogoutReqDto params = new NaverLogoutReqDto(jwtToken);
+        String result = oAuthLoginService.naverAuthLogout(params);
+        if(result == null) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResultDto.fail());
+        }
+        return ResponseEntity.ok(ResultDto.of(200, result));
     }
 
     /**
@@ -76,14 +81,13 @@ public class LoginController {
             jwtToken = accessToken.split(" ")[1];
         }
         KakaoLogoutReqDto params = new KakaoLogoutReqDto(jwtToken);
-        String result = oAuthLoginService.authLogout(params);
+        String result = oAuthLoginService.kakaoAuthLogout(params);
         if(result == null) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResultDto.fail());
         }
         return ResponseEntity.ok(ResultDto.of(200, result));
-
     }
 
     @GetMapping("/auth/token/valid")

@@ -200,7 +200,7 @@ public class OAuthLoginService {
     }
 
     @Transactional
-    public String authLogout(AuthLogoutParams params) {
+    public String kakaoAuthLogout(AuthLogoutParams params) {
         String accessToken = params.makeBody().getFirst("accessToken");
         log.info("accessToken = {}", accessToken);
         // accessToken에서 authId 가져오기
@@ -216,6 +216,27 @@ public class OAuthLoginService {
         // authId를 kakao 쪽에 전송하여 로그아웃
         if(params.oAuthProvider().equals(AuthProvider.KAKAO)){
             return kakaoApiClient.logout(authUserId);
+        }
+        return kakaoApiClient.logout(authUserId);
+    }
+
+    @Transactional
+    public String naverAuthLogout(AuthLogoutParams params) {
+        String accessToken = params.makeBody().getFirst("accessToken");
+        log.info("accessToken = {}", accessToken);
+        // accessToken에서 authId 가져오기
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey.getBytes())
+                .parseClaimsJws(accessToken)
+                .getBody();
+        String authUserId = claims.get("authUserId", String.class);
+        log.info("authUserId = {}", authUserId);
+        // UserToken 제거
+        Optional<UserToken> userToken = userTokenRepository.findByAccessToken(accessToken);
+        userToken.ifPresent(userTokenRepository::delete);
+        // authId를 naver 쪽에 전송하여 로그아웃
+        if(params.oAuthProvider().equals(AuthProvider.NAVER)){
+            return naverApiClient.logout(authUserId);
         }
         return naverApiClient.logout(authUserId);
     }
