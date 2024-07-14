@@ -7,6 +7,7 @@ import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
 import com.fitmate.oauth.kafka.producer.UserInfoKafkaProducer;
+import com.fitmate.oauth.kafka.producer.UserUpdateKafkaProducer;
 import com.fitmate.oauth.service.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;

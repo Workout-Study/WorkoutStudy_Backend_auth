@@ -15,7 +15,7 @@ public class NaverLoginReqDto implements AuthLoginParams {
 
     @Override
     public AuthProvider authProvider() {
-        return AuthProvider.KAKAO;
+        return AuthProvider.NAVER;
     }
 
     @Override

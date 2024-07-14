@@ -35,3 +35,20 @@ services:
       - /etc/localtime:/etc/localtime:ro
     networks:
       - fit-mate
+  alarm-service:
+    image: kimtaeheon/alarm-service:latest
+    environment:
+      CONTAINER_NAME: alarm-service
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql-auth:5432/postgres
+      SPRING_DATASOURCE_USERNAME: auth
+      SPRING_DATASOURCE_PASSWORD: auth1!
+    container_name: alarm-service
+    restart: on-failure
+    depends_on:
+      - postgresql-auth
+    ports:
+      - "8088:8080"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - fit-mate

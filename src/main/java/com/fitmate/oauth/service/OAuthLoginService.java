@@ -175,7 +175,7 @@ public class OAuthLoginService {
         // kafka User-create-message produce
         String createdAtEpoch = String.valueOf(users.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
         String updatedAtEpoch = String.valueOf(users.getUpdatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
-        // userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), users.getNickName(), users.getState(), createdAtEpoch, updatedAtEpoch));
+        userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), users.getNickName(), users.getState(), createdAtEpoch, updatedAtEpoch));
         // JWT 토큰 발급
         String jwtAccessToken = JwtTokenUtils.generateToken(oauthId, secretKey, accessTokenExpiredTimeMs);
         String jwtRefreshToken = JwtTokenUtils.generateToken(oauthId, secretKey, refreshTokenExpiredTimeMs);
