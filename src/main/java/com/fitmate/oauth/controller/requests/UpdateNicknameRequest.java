@@ -7,7 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateNicknameRequest {
-	Long userId;
 	@NotNull
 	String nickname;
 }

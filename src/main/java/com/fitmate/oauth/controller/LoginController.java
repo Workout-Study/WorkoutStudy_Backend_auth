@@ -27,13 +27,6 @@ public class LoginController {
     private final KakaoLoginService kakaoLoginService;
     private final TokenService tokenService;
 
-//    @Autowired
-//    public LoginController(NaverLoginService naverLoginService, KakaoLoginService kakaoLoginService, TokenService tokenService) {
-//        this.naverLoginService = naverLoginService;
-//        this.kakaoLoginService = kakaoLoginService;
-//        this.tokenService = tokenService;
-//    }
-
     /**
      * 네이버로그인
      * @param code 인가 코드

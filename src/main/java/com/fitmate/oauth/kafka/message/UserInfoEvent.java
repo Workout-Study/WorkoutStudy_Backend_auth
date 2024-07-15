@@ -4,8 +4,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.Instant;
-
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class UserInfoEvent {

@@ -102,7 +102,7 @@ public class OAuthLoginService {
         // kafka User-create-message produce
         String createdAtEpoch = String.valueOf(users.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
         String updatedAtEpoch = String.valueOf(users.getUpdatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
-        userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), users.getNickName(), users.getState(), createdAtEpoch, updatedAtEpoch));
+
         // JWT 토큰 발급
         String jwtAccessToken = JwtTokenUtils.generateToken(oauthId, secretKey, accessTokenExpiredTimeMs);
         String jwtRefreshToken = JwtTokenUtils.generateToken(oauthId, secretKey, refreshTokenExpiredTimeMs);
@@ -116,6 +116,9 @@ public class OAuthLoginService {
 
         log.info("user가 DB에 없는 경우");
         log.info("jwtAccessToken = {}, jwtRefreshToken = {}", jwtAccessToken, jwtRefreshToken);
+
+        userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), users.getNickName(), users.getState(), createdAtEpoch, updatedAtEpoch));
+
         return LoginResDto.builder()
                 .resultCode(ResultCode.SUCCESS)
                 .accessToken(jwtAccessToken)
@@ -175,7 +178,6 @@ public class OAuthLoginService {
         // kafka User-create-message produce
         String createdAtEpoch = String.valueOf(users.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
         String updatedAtEpoch = String.valueOf(users.getUpdatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
-        userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), users.getNickName(), users.getState(), createdAtEpoch, updatedAtEpoch));
         // JWT 토큰 발급
         String jwtAccessToken = JwtTokenUtils.generateToken(oauthId, secretKey, accessTokenExpiredTimeMs);
         String jwtRefreshToken = JwtTokenUtils.generateToken(oauthId, secretKey, refreshTokenExpiredTimeMs);
@@ -189,6 +191,9 @@ public class OAuthLoginService {
 
         log.info("user가 DB에 없는 경우");
         log.info("jwtAccessToken = {}, jwtRefreshToken = {}", jwtAccessToken, jwtRefreshToken);
+
+        userCreateKafkaProducer.handleEvent(UserCreateEvent.of(savedUser.getUserId(), savedUser.getNickName(), savedUser.getState(), createdAtEpoch, updatedAtEpoch));
+
         return LoginResDto.builder()
                 .resultCode(ResultCode.SUCCESS)
                 .accessToken(jwtAccessToken)
