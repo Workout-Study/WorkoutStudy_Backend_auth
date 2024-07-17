@@ -121,7 +121,7 @@ public class OAuthLoginService {
         users.setUserToken(userToken);
         UserToken save = userTokenRepository.save(userToken);
 
-        // userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), users.getNickName(), users.getState(), createdAtEpoch, updatedAtEpoch));
+        userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), users.getNickName(), users.getState(), createdAtEpoch, updatedAtEpoch));
 
         return LoginResDto.builder()
                 .resultCode(ResultCode.SUCCESS)
