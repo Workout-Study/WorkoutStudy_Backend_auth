@@ -1,10 +1,6 @@
 package com.fitmate.oauth.jpa.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -26,6 +22,11 @@ public class Users extends BaseEntity{
     private String fcmToken;
     private Boolean state;
 
+    @Setter
+    @OneToOne
+    @JoinColumn(name = "user_token")
+    private UserToken userToken;
+
     public void setNickname(String nickname) {
         this.nickName = nickname;
     }
@@ -33,4 +34,5 @@ public class Users extends BaseEntity{
     public void setUserDelete() {
         this.state = true;
     }
+
 }

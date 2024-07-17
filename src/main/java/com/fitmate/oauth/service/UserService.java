@@ -11,6 +11,7 @@ import com.fitmate.oauth.kafka.producer.UserUpdateKafkaProducer;
 import com.fitmate.oauth.service.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
     private final UsersRepository usersRepository;
     private final UserTokenRepository tokenRepository;
@@ -37,16 +39,17 @@ public class UserService {
 
     @Transactional
     public boolean updateUserNickname(UpdateNicknameRequest request, String accessToken) {
-        Optional<UserToken> byAccessToken = tokenRepository.findByAccessToken(accessToken.split(" ")[1]);
-        Optional<Users> usersOptional = usersRepository.findById(byAccessToken.get().getUserId());
+        if (accessToken.contains(" ")) {
+            accessToken = accessToken.split(" ")[1];
+        }
+        Optional<UserToken> byAccessToken = tokenRepository.findByAccessToken(accessToken);
+        Users users = byAccessToken.get().getUsers();
+        users.setNickname(request.getNickname());
+        usersRepository.save(users);
 
-        usersOptional.ifPresent(users -> {
-            users.setNickname(request.getNickname());
-            usersRepository.save(users);
-
-            //kafka updateUserNickName (userId, userNickname)
-            userInfoKafkaProducer.handleEvent(users.getUserId());
-        });
+        //kafka updateUserNickName (userId, userNickname)
+        log.info("UPDATE NICKNAME = {} USERID : {}", users.getNickName(), users.getUserId());
+        userInfoKafkaProducer.handleEvent(users.getUserId());
         return true;
     }
 

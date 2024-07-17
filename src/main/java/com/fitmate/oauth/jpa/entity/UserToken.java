@@ -1,26 +1,23 @@
 package com.fitmate.oauth.jpa.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @Setter
-@DynamicInsert
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@ToString
 public class UserToken {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     long userTokenId;
-    long userId;
+
+    @OneToOne(mappedBy = "userToken", cascade = CascadeType.PERSIST)
+    private Users users;
     String authAccessToken;
     String accessToken;
     String refreshToken;
+
+    public UserToken() {}
 }

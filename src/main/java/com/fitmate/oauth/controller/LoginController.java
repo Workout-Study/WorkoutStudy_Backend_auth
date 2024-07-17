@@ -4,11 +4,8 @@ import com.fitmate.oauth.dto.authLogin.KakaoLoginReqDto;
 import com.fitmate.oauth.dto.ResultDto;
 import com.fitmate.oauth.dto.authLogin.LoginResDto;
 import com.fitmate.oauth.dto.authLogin.NaverLoginReqDto;
-import com.fitmate.oauth.dto.authLogout.AuthLogoutParams;
 import com.fitmate.oauth.dto.authLogout.KakaoLogoutReqDto;
 import com.fitmate.oauth.dto.authLogout.NaverLogoutReqDto;
-import com.fitmate.oauth.service.KakaoLoginService;
-import com.fitmate.oauth.service.NaverLoginService;
 import com.fitmate.oauth.service.OAuthLoginService;
 import com.fitmate.oauth.service.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class LoginController {
     private final OAuthLoginService oAuthLoginService;
-    private final NaverLoginService naverLoginService;
-    private final KakaoLoginService kakaoLoginService;
     private final TokenService tokenService;
 
     /**
