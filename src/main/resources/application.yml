@@ -26,6 +26,7 @@ spring:
         topic-name: user-info-event
       user-create-event:
         topic-name: user-create-event
+
 #      user-delete-event:
 #        topic-name: user-delete-event
 #      user-update-event:

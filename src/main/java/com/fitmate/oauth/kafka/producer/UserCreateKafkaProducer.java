@@ -35,16 +35,16 @@ public class UserCreateKafkaProducer {
 
     public void handleEvent(UserCreateEvent event) {
         try {
-            byte[] serializedEvent = objectMapper.writeValueAsBytes(event);
-            log.info("serializedEvent: {}", serializedEvent);
+//            byte[] serializedEvent = objectMapper.writeValueAsBytes(event);
+//            log.info("serializedEvent: {}", serializedEvent);
             log.info("event: {}", event);
             ProducerRecord<String, Object> producerRecord = new ProducerRecord<>(
                     topicName,
                     null, // partition
                     Instant.now().toEpochMilli(), // timestamp
                     containerName, // key
-                    event,
-                    List.of(new RecordHeader("containerName", containerName.getBytes())) // custom header 사용시 가능
+                    event
+                    // List.of(new RecordHeader("containerName", containerName.getBytes())) // custom header 사용시 가능
             );
             log.info("producerRecord = {}", producerRecord);
             kafkaTemplate.executeInTransaction(operations -> {

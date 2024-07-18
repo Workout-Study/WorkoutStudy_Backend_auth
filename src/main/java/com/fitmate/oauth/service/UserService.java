@@ -49,7 +49,7 @@ public class UserService {
 
         //kafka updateUserNickName (userId, userNickname)
         log.info("UPDATE NICKNAME = {} USERID : {}", users.getNickName(), users.getUserId());
-        // userInfoKafkaProducer.handleEvent(users.getUserId());
+        userInfoKafkaProducer.handleEvent(users.getUserId());
         return true;
     }
 
