@@ -21,6 +21,8 @@ public class Users extends BaseEntity{
     private String nickName;
     private String fcmToken;
     private Boolean state;
+    @Setter
+    private String imageUrl;
 
     @Setter
     @OneToOne

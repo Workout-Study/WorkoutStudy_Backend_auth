@@ -16,6 +16,7 @@ import org.springframework.kafka.transaction.KafkaTransactionManager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Configuration
 @EnableKafka
@@ -35,7 +36,7 @@ public class KafkaProducerConfig {
         configProps.put(ProducerConfig.ACKS_CONFIG, "all");
         // configProps.put(ProducerConfig.RETRIES_CONFIG, 5);
         configProps.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 1);
-        configProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, containerName);
+        configProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, UUID.randomUUID().toString());
         return new DefaultKafkaProducerFactory<>(configProps);
     }
     @Bean

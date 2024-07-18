@@ -13,6 +13,7 @@ import lombok.Value;
 public class GetUserInfoResponse {
 	Long userId;
 	String nickname;
+	String imageUrl;
 	Boolean state;
 	String createdAt;
 	String updatedAt;

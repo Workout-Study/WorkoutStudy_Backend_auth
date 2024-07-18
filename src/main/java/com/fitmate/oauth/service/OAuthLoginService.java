@@ -14,7 +14,6 @@ import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
 import com.fitmate.oauth.kafka.message.UserCreateEvent;
 import com.fitmate.oauth.kafka.producer.UserCreateKafkaProducer;
-import com.fitmate.oauth.kafka.producer.UserInfoKafkaProducer;
 import com.fitmate.oauth.util.JwtTokenUtils;
 import com.fitmate.oauth.vo.AuthProvider;
 import com.fitmate.oauth.vo.naver.NaverGetProfileVo;

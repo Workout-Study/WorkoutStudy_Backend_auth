@@ -6,7 +6,9 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateNicknameRequest {
+public class UpdateRequest {
 	@NotNull
 	String nickname;
+
+	String imageUrl;
 }

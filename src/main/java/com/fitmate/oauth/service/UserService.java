@@ -1,13 +1,12 @@
 package com.fitmate.oauth.service;
 
-import com.fitmate.oauth.controller.requests.UpdateNicknameRequest;
+import com.fitmate.oauth.controller.requests.UpdateRequest;
 import com.fitmate.oauth.controller.responses.GetUserInfoResponse;
 import com.fitmate.oauth.jpa.entity.UserToken;
 import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
 import com.fitmate.oauth.kafka.producer.UserInfoKafkaProducer;
-import com.fitmate.oauth.kafka.producer.UserUpdateKafkaProducer;
 import com.fitmate.oauth.service.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -38,18 +37,19 @@ public class UserService {
     }
 
     @Transactional
-    public boolean updateUserNickname(UpdateNicknameRequest request, String accessToken) {
+    public boolean updateUser(UpdateRequest request, String accessToken) {
         if (accessToken.contains(" ")) {
             accessToken = accessToken.split(" ")[1];
         }
         Optional<UserToken> byAccessToken = tokenRepository.findByAccessToken(accessToken);
         Users users = byAccessToken.get().getUsers();
         users.setNickname(request.getNickname());
+        users.setImageUrl(request.getImageUrl());
         usersRepository.save(users);
 
         //kafka updateUserNickName (userId, userNickname)
         log.info("UPDATE NICKNAME = {} USERID : {}", users.getNickName(), users.getUserId());
-        userInfoKafkaProducer.handleEvent(users.getUserId());
+        // userInfoKafkaProducer.handleEvent(users.getUserId());
         return true;
     }
 

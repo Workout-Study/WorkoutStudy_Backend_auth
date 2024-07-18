@@ -6,12 +6,14 @@ import com.fitmate.oauth.kafka.message.UserCreateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.ProducerFencedException;
+import org.apache.kafka.common.header.internals.RecordHeader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -33,27 +35,26 @@ public class UserCreateKafkaProducer {
 
     public void handleEvent(UserCreateEvent event) {
         try {
-            // byte[] serializedEvent = objectMapper.writeValueAsBytes(event);
-            // log.info("serializedEvent: {}", serializedEvent);
-//            log.info("event: {}", event);
-//            ProducerRecord<String, Object> producerRecord = new ProducerRecord<>(
-//                    topicName,
-//                    null, // partition
-//                    Instant.now().toEpochMilli(), // timestamp
-//                    containerName, // key
-//                    event
-//                    List.of(new RecordHeader("containerName", containerName.getBytes())) // custom header 사용시 가능
-//            );
-//            log.info("producerRecord = {}", producerRecord);
-//            kafkaTemplate.executeInTransaction(operations -> {
-//                operations.send(producerRecord);
-//                return true;
-//
-//            });
-            kafkaTemplate.send(topicName, event);
+            byte[] serializedEvent = objectMapper.writeValueAsBytes(event);
+            log.info("serializedEvent: {}", serializedEvent);
+            log.info("event: {}", event);
+            ProducerRecord<String, Object> producerRecord = new ProducerRecord<>(
+                    topicName,
+                    null, // partition
+                    Instant.now().toEpochMilli(), // timestamp
+                    containerName, // key
+                    event,
+                    List.of(new RecordHeader("containerName", containerName.getBytes())) // custom header 사용시 가능
+            );
+            log.info("producerRecord = {}", producerRecord);
+            kafkaTemplate.executeInTransaction(operations -> {
+                operations.send(producerRecord);
+                return true;
+
+            });
         } catch (Exception e) {
             log.info("User ID = {}", event.getUserId());
-            log.error("이벤트를 직렬화 할 수 없습니다 = [{}]: {}", event, e.getMessage());
+            log.error("이벤트를 전송할 수 없습니다 = [{}]: {}", event, e.getMessage());
         }
     }
 }

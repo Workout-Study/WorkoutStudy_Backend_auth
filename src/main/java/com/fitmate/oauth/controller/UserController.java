@@ -1,6 +1,6 @@
 package com.fitmate.oauth.controller;
 
-import com.fitmate.oauth.controller.requests.UpdateNicknameRequest;
+import com.fitmate.oauth.controller.requests.UpdateRequest;
 import com.fitmate.oauth.controller.responses.GetUserInfoResponse;
 import com.fitmate.oauth.dto.ResultDto;
 import com.fitmate.oauth.service.TokenService;
@@ -31,9 +31,9 @@ public class UserController {
     private final UserService userService;
     private final TokenService tokenService;
 
-    @PutMapping("/update/nickname")
-    @Operation(summary = "사용자 nickname 생성 및 업데이트", description = "nickname 이 null 이면 에러 발생")
-    public ResponseEntity<ResultDto> createNickname(@RequestBody UpdateNicknameRequest request, HttpServletRequest httpServletRequest) {
+    @PutMapping("/update/info")
+    @Operation(summary = "사용자 nickname,프로필이미지 생성 및 업데이트", description = "nickname 이 null 이면 에러 발생")
+    public ResponseEntity<ResultDto> createNickname(@RequestBody UpdateRequest request, HttpServletRequest httpServletRequest) {
         String accessToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
         if(!tokenService.isTokenValid(accessToken)) {
             return ResponseEntity
@@ -41,7 +41,7 @@ public class UserController {
                     .body(ResultDto.of(401, "UNAUTHORIZED. check accessToken"));
         }
 
-        if(userService.updateUserNickname(request, accessToken)) {
+        if(userService.updateUser(request, accessToken)) {
             return ResponseEntity.ok(ResultDto.success());
         } else {
             return ResponseEntity
