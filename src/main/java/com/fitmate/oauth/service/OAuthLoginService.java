@@ -103,11 +103,10 @@ public class OAuthLoginService {
                 .state(false)
                 .imageUrl(imageUrl)
                 .fcmToken(fcmToken)
+                .firstCreate(true)
                 .build();
         usersRepository.save(users);
-        // kafka User-create-message produce
-        String createdAtEpoch = String.valueOf(users.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
-        String updatedAtEpoch = String.valueOf(users.getUpdatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
+
 
         // JWT 토큰 발급
         String jwtAccessToken = JwtTokenUtils.generateToken(oauthId, secretKey, accessTokenExpiredTimeMs);
@@ -121,7 +120,7 @@ public class OAuthLoginService {
         users.setUserToken(userToken);
         UserToken save = userTokenRepository.save(userToken);
 
-        userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), users.getNickName(), users.getState(), users.getImageUrl(), createdAtEpoch, updatedAtEpoch));
+        // userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), users.getNickName(), users.getState(), users.getImageUrl(), createdAtEpoch, updatedAtEpoch));
 
         return LoginResDto.builder()
                 .resultCode(ResultCode.SUCCESS)
@@ -131,6 +130,8 @@ public class OAuthLoginService {
                 .isNewUser(1)
                 .fcmToken(fcmToken)
                 .imageUrl(imageUrl)
+                .createdAt(users.getCreatedAt().toString())
+                .createdAt(users.getCreatedAt().toString())
                 .build();
     }
 
@@ -150,7 +151,6 @@ public class OAuthLoginService {
                 .accessToken(jwtAccessToken)
                 .refreshToken(jwtRefreshToken).build();
         userTokenRepository.save(userToken);
-
         optionalUsers.get().setUserToken(userToken);
         return LoginResDto.builder()
                 .resultCode(ResultCode.SUCCESS)
@@ -160,6 +160,7 @@ public class OAuthLoginService {
                 .isNewUser(0)
                 .fcmToken(fcmToken)
                 .imageUrl(imageUrl)
+                .createdAt(optionalUsers.get().getCreatedAt().toString())
                 .build();
     }
 

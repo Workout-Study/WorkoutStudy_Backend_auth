@@ -14,8 +14,9 @@ public class LoginResDto {
     private final int isNewUser; // -1 : 실패, 0 : 기존 사용자, 1 : 새로운 사용자
     private final String fcmToken;
     private final String imageUrl;
+    private final String createdAt;
 
-    private LoginResDto(ResultCode resultCode, String accessToken, String refreshToken, long userId, int isNewUser, String fcmToken, String imageUrl) {
+    private LoginResDto(ResultCode resultCode, String accessToken, String refreshToken, long userId, int isNewUser, String fcmToken, String imageUrl, String createdAt) {
         this.resultCode = resultCode;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
@@ -23,5 +24,6 @@ public class LoginResDto {
         this.isNewUser = isNewUser;
         this.fcmToken = fcmToken;
         this.imageUrl = imageUrl;
+        this.createdAt = createdAt;
     }
 }

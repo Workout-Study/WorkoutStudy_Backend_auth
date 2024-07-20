@@ -6,6 +6,8 @@ import com.fitmate.oauth.jpa.entity.UserToken;
 import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
+import com.fitmate.oauth.kafka.message.UserCreateEvent;
+import com.fitmate.oauth.kafka.producer.UserCreateKafkaProducer;
 import com.fitmate.oauth.kafka.producer.UserInfoKafkaProducer;
 import com.fitmate.oauth.service.mapper.UserMapper;
 
@@ -14,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 @Service
@@ -22,6 +25,7 @@ import java.util.Optional;
 public class UserService {
     private final UsersRepository usersRepository;
     private final UserTokenRepository tokenRepository;
+    private final UserCreateKafkaProducer userCreateKafkaProducer;
     private final UserInfoKafkaProducer userInfoKafkaProducer;
 
     @Transactional
@@ -48,7 +52,13 @@ public class UserService {
             users.setImageUrl(request.getImageUrl());
         }
         usersRepository.save(users);
-
+        if (users.getFirstCreate()) {
+            // kafka User-create-message produce
+            String createdAtEpoch = String.valueOf(users.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
+            String updatedAtEpoch = String.valueOf(users.getUpdatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
+            userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), request.getNickname(), users.getState(), request.getImageUrl(), createdAtEpoch, updatedAtEpoch));
+            users.setFirstCreate(false);
+        }
         //kafka updateUserNickName (userId, userNickname)
         log.info("UPDATE NICKNAME = {} USERID : {}", users.getNickName(), users.getUserId());
         userInfoKafkaProducer.handleEvent(users.getUserId());
