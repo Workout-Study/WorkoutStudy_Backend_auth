@@ -51,7 +51,7 @@ public class OAuthLoginService {
     private final UserCreateKafkaProducer userCreateKafkaProducer;
 
     @Transactional
-    public LoginResDto kakaoAuthLogin(AuthLoginParams params, String fcmToken) {
+    public LoginResDto kakaoAuthLogin(AuthLoginParams params, String fcmToken, String imageUrl) {
         String accessToken = kakaoApiClient.requestAccessToken(params);
         AuthVerifyTokenVo authVerifyTokenVo = kakaoApiClient.verifyAccessToken(accessToken);
         Optional<Users> optionalUsers =
@@ -60,11 +60,11 @@ public class OAuthLoginService {
             return loginExistingUser(fcmToken, optionalUsers, accessToken);
         }
         String oauthId = String.valueOf(authVerifyTokenVo.getId());
-        return loginNotExistingUser(params, fcmToken, oauthId, accessToken);
+        return loginNotExistingUser(params, fcmToken, oauthId, accessToken, imageUrl);
     }
 
     @Transactional
-    public LoginResDto naverAuthLogin(NaverLoginReqDto params, String fcmToken) {
+    public LoginResDto naverAuthLogin(NaverLoginReqDto params, String fcmToken, String imageUrl) {
         String accessToken = naverApiClient.requestAccessToken(params);
         NaverGetProfileVo authVerifyTokenVo = naverApiClient.verifyAccessToken(accessToken);
         Optional<Users> optionalUsers =
@@ -74,7 +74,7 @@ public class OAuthLoginService {
         }
 
         String oauthId = String.valueOf(authVerifyTokenVo.getResponse().getId());
-        return loginNotExistingUser(params, fcmToken, oauthId, accessToken);
+        return loginNotExistingUser(params, fcmToken, oauthId, accessToken, imageUrl);
     }
 
     @Transactional
@@ -95,12 +95,13 @@ public class OAuthLoginService {
         return naverApiClient.logout(authUserId);
     }
 
-    private LoginResDto loginNotExistingUser(AuthLoginParams params, String fcmToken, String oauthId, String accessToken) {
+    private LoginResDto loginNotExistingUser(AuthLoginParams params, String fcmToken, String oauthId, String accessToken, String imageUrl) {
         Users users = Users.builder()
                 .oauthId(oauthId)
                 .oauthType(params.authProvider().name())
                 .nickName("")
                 .state(false)
+                .imageUrl(imageUrl)
                 .fcmToken(fcmToken)
                 .build();
         usersRepository.save(users);
@@ -120,7 +121,7 @@ public class OAuthLoginService {
         users.setUserToken(userToken);
         UserToken save = userTokenRepository.save(userToken);
 
-        userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), users.getNickName(), users.getState(), createdAtEpoch, updatedAtEpoch));
+        userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), users.getNickName(), users.getState(), users.getImageUrl(), createdAtEpoch, updatedAtEpoch));
 
         return LoginResDto.builder()
                 .resultCode(ResultCode.SUCCESS)
@@ -129,12 +130,14 @@ public class OAuthLoginService {
                 .userId(users.getUserId())
                 .isNewUser(1)
                 .fcmToken(fcmToken)
+                .imageUrl(imageUrl)
                 .build();
     }
 
     private LoginResDto loginExistingUser(String fcmToken, Optional<Users> optionalUsers, String accessToken) {
         String oauthId = optionalUsers.get().getOauthId();
         Long userId = optionalUsers.get().getUserId();
+        String imageUrl = optionalUsers.get().getImageUrl();
         String jwtAccessToken = JwtTokenUtils.generateToken(oauthId, secretKey, accessTokenExpiredTimeMs);
         String jwtRefreshToken = JwtTokenUtils.generateToken(oauthId, secretKey, refreshTokenExpiredTimeMs);
         log.info("user가 DB에 있는 경우");
@@ -156,6 +159,7 @@ public class OAuthLoginService {
                 .userId(userId)
                 .isNewUser(0)
                 .fcmToken(fcmToken)
+                .imageUrl(imageUrl)
                 .build();
     }
 

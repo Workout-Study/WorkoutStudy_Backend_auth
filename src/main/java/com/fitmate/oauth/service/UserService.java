@@ -44,7 +44,9 @@ public class UserService {
         Optional<UserToken> byAccessToken = tokenRepository.findByAccessToken(accessToken);
         Users users = byAccessToken.get().getUsers();
         users.setNickname(request.getNickname());
-        users.setImageUrl(request.getImageUrl());
+        if(!request.getImageUrl().isEmpty()){
+            users.setImageUrl(request.getImageUrl());
+        }
         usersRepository.save(users);
 
         //kafka updateUserNickName (userId, userNickname)

@@ -13,7 +13,7 @@ public class UserCreateEventTest {
 
     @Test
     public void testSerialization() throws JsonProcessingException {
-        UserCreateEvent event = new UserCreateEvent(1L, "nickname", true, "createdAt", "updatedAt");
+        UserCreateEvent event = new UserCreateEvent(1L, "nickname", true, "imageUrl", "createdAt", "updatedAt");
         String serialized = objectMapper.writeValueAsString(event);
         System.out.println(serialized);
 

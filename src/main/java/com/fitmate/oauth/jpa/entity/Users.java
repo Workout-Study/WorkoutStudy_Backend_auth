@@ -22,6 +22,7 @@ public class Users extends BaseEntity{
     private String fcmToken;
     private Boolean state;
     @Setter
+    @Column(length = 2000)
     private String imageUrl;
 
     @Setter

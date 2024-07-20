@@ -14,10 +14,11 @@ public class UserCreateEvent {
     private Long userId;
     private String nickname;
     private Boolean state;
+    private String imageUrl;
     private String createdAt;
     private String updatedAt;
 
-    public static UserCreateEvent of(Long userId, String nickname, Boolean state, String createdAt, String updatedAt) {
-        return new UserCreateEvent(userId, nickname, state, createdAt, updatedAt);
+    public static UserCreateEvent of(Long userId, String nickname, Boolean state, String imageUrl, String createdAt, String updatedAt) {
+        return new UserCreateEvent(userId, nickname, state, imageUrl, createdAt, updatedAt);
     }
 }
