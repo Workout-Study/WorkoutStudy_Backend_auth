@@ -67,3 +67,7 @@ jwt:
   token:
     access-token-expired-time-ms: 1800000
     refresh-token-expired-time-ms: 2592000000
+
+firebase:
+  project-id: fitmate-e2b03
+  key-path: fitmate-e2b03-firebase-adminsdk-6aeom-500f4fc3e9.json
