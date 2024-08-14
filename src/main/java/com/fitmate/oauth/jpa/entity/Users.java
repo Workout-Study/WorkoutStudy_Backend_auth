@@ -28,7 +28,7 @@ public class Users extends BaseEntity{
     private String imageUrl;
 
     @Setter
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_token")
     private UserToken userToken;
 

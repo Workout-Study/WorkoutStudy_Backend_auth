@@ -6,7 +6,7 @@ import lombok.Data;
 public class ChatDto {
     private long userId;
     private String messageId;
-    private int fitgroupId;
+    private int fitGroupId;
     private int fitMateId;
     private String message;
     private String messageTime;

@@ -15,6 +15,7 @@ import com.fitmate.oauth.jpa.repository.UsersRepository;
 import com.fitmate.oauth.kafka.message.UserCreateEvent;
 import com.fitmate.oauth.kafka.producer.UserCreateKafkaProducer;
 import com.fitmate.oauth.util.JwtTokenUtils;
+import com.fitmate.oauth.util.TimeUtils;
 import com.fitmate.oauth.vo.AuthProvider;
 import com.fitmate.oauth.vo.naver.NaverGetProfileVo;
 import io.jsonwebtoken.Claims;
@@ -121,7 +122,8 @@ public class OAuthLoginService {
         UserToken save = userTokenRepository.save(userToken);
 
         // userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), users.getNickName(), users.getState(), users.getImageUrl(), createdAtEpoch, updatedAtEpoch));
-
+        String createdAt = TimeUtils.formatTimeToCustomString(users.getCreatedAt());
+        String updatedAt = TimeUtils.formatTimeToCustomString(users.getUpdatedAt());
         return LoginResDto.builder()
                 .resultCode(ResultCode.SUCCESS)
                 .accessToken(jwtAccessToken)
@@ -130,8 +132,8 @@ public class OAuthLoginService {
                 .isNewUser(1)
                 .fcmToken(fcmToken)
                 .imageUrl(imageUrl)
-                .createdAt(users.getCreatedAt().toString())
-                .createdAt(users.getCreatedAt().toString())
+                .createdAt(createdAt)
+                .createdAt(updatedAt)
                 .build();
     }
 
@@ -152,6 +154,7 @@ public class OAuthLoginService {
                 .refreshToken(jwtRefreshToken).build();
         userTokenRepository.save(userToken);
         optionalUsers.get().setUserToken(userToken);
+        String createdAt = TimeUtils.formatTimeToCustomString(optionalUsers.get().getCreatedAt());
         return LoginResDto.builder()
                 .resultCode(ResultCode.SUCCESS)
                 .accessToken(jwtAccessToken)
@@ -160,7 +163,7 @@ public class OAuthLoginService {
                 .isNewUser(0)
                 .fcmToken(fcmToken)
                 .imageUrl(imageUrl)
-                .createdAt(optionalUsers.get().getCreatedAt().toString())
+                .createdAt(createdAt)
                 .build();
     }
 

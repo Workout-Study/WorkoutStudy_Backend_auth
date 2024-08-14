@@ -13,7 +13,8 @@ public class UserToken {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     long userTokenId;
 
-    @OneToOne(mappedBy = "userToken", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "userToken", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private Users users;
     String authAccessToken;
     String accessToken;

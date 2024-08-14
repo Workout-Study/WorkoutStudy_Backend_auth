@@ -56,7 +56,8 @@ public class WebhookService {
     }
 
     public void sendRealTimeChatWebhook(ChatDto chatDto) {
-        Long fitGroupId = (long) chatDto.getFitgroupId();
+        int fitGroupId = chatDto.getFitGroupId();
+        log.info("fitGroupId: {}", fitGroupId);
         List<Long> fitMateIdsFromExternalApi = fitGroupService.getFitMateIdsFromExternalApi(fitGroupId, chatDto.getUserId());
 
         for (Long userId : fitMateIdsFromExternalApi) {
@@ -70,7 +71,7 @@ public class WebhookService {
                             .build())
                     .putData("userId", String.valueOf(chatDto.getUserId()))
                     .putData("messageId", chatDto.getMessageId())
-                    .putData("fitGroupId", String.valueOf(chatDto.getFitgroupId()))
+                    .putData("fitGroupId", String.valueOf(chatDto.getFitGroupId()))
                     .putData("fitMateId", String.valueOf(userId))
                     .putData("message", chatDto.getMessage())
                     .putData("messageTime", chatDto.getMessageTime())

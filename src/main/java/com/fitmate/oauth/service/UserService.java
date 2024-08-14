@@ -11,6 +11,7 @@ import com.fitmate.oauth.kafka.producer.UserCreateKafkaProducer;
 import com.fitmate.oauth.kafka.producer.UserInfoKafkaProducer;
 import com.fitmate.oauth.service.mapper.UserMapper;
 
+import com.fitmate.oauth.util.TimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -54,9 +55,10 @@ public class UserService {
         usersRepository.save(users);
         if (users.getFirstCreate()) {
             // kafka User-create-message produce
-            String createdAtEpoch = String.valueOf(users.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
-            String updatedAtEpoch = String.valueOf(users.getUpdatedAt().toInstant(ZoneOffset.UTC).toEpochMilli());
-            userCreateKafkaProducer.handleEvent(UserCreateEvent.of(users.getUserId(), request.getNickname(), users.getState(), request.getImageUrl(), createdAtEpoch, updatedAtEpoch));
+            String createdAt = TimeUtils.formatTimeToCustomString(users.getCreatedAt());
+            String updatedAt = TimeUtils.formatTimeToCustomString(users.getUpdatedAt());
+            userCreateKafkaProducer.handleEvent(UserCreateEvent.of(
+                    users.getUserId(), request.getNickname(), users.getState(), request.getImageUrl(), createdAt, updatedAt));
             users.setFirstCreate(false);
         }
         //kafka updateUserNickName (userId, userNickname)

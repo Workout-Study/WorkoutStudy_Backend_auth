@@ -35,13 +35,13 @@ public class UserController {
     @Operation(summary = "사용자 nickname,프로필이미지 생성 및 업데이트", description = "nickname 이 null 이면 에러 발생")
     public ResponseEntity<ResultDto> createNickname(@RequestBody UpdateRequest request, HttpServletRequest httpServletRequest) {
         String accessToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        if(!tokenService.isTokenValid(accessToken)) {
+        if (!tokenService.isTokenValid(accessToken)) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(ResultDto.of(401, "UNAUTHORIZED. check accessToken"));
         }
 
-        if(userService.updateUser(request, accessToken)) {
+        if (userService.updateUser(request, accessToken)) {
             return ResponseEntity.ok(ResultDto.success());
         } else {
             return ResponseEntity
