@@ -55,4 +55,11 @@ public class UserController {
         GetUserInfoResponse getUserInfoResponse = userService.getUserInfo(userId);
         return ResponseEntity.ok(getUserInfoResponse);
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResultDto> deleteUser(HttpServletRequest httpServletRequest) {
+        String accessToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        Long id = userService.deleteUser(accessToken);
+        return ResponseEntity.ok(ResultDto.success("ID " + id + "가 성공적으로 삭제되었습니다."));
+    }
 }

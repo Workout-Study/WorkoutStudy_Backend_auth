@@ -14,8 +14,10 @@ import com.fitmate.oauth.service.mapper.UserMapper;
 import com.fitmate.oauth.util.TimeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.ZoneOffset;
 import java.util.Optional;
@@ -30,15 +32,18 @@ public class UserService {
     private final UserInfoKafkaProducer userInfoKafkaProducer;
 
     @Transactional
-    public boolean deleteUser(long userId) {
-        Optional<Users> usersOptional = usersRepository.findById(userId);
+    public Long deleteUser(String accessToken) {
+        if (accessToken.contains(" ")) {
+            accessToken = accessToken.split(" ")[1];
+        }
+        Optional<UserToken> byAccessToken = tokenRepository.findByAccessToken(accessToken);
+        Users users = byAccessToken.get().getUsers();
         // USER DB State 변경
-        usersOptional.ifPresent(users -> {
-            users.setUserDelete();
-            //kafka deleteUser(userId)
-            userInfoKafkaProducer.handleEvent(users.getUserId());
-        });
-        return true;
+        users.setUserDelete();
+        usersRepository.save(users);
+        //kafka deleteUser(userId)
+        userInfoKafkaProducer.handleEvent(users.getUserId());
+        return users.getUserId();
     }
 
     @Transactional
@@ -48,6 +53,7 @@ public class UserService {
         }
         Optional<UserToken> byAccessToken = tokenRepository.findByAccessToken(accessToken);
         Users users = byAccessToken.get().getUsers();
+        validateUserNotDeleted(users.getUserId());
         users.setNickname(request.getNickname());
         if(!request.getImageUrl().isEmpty()){
             users.setImageUrl(request.getImageUrl());
@@ -69,7 +75,14 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public GetUserInfoResponse getUserInfo(long userId) {
+        validateUserNotDeleted(userId);
         Users users = usersRepository.findByUserId(userId);
         return UserMapper.toGetUserInfoResponse(users);
+    }
+
+    public void validateUserNotDeleted(long userId) {
+        if(usersRepository.findByUserId(userId).getState()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제된 사용자입니다.");
+        }
     }
 }

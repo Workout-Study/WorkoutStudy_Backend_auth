@@ -8,6 +8,7 @@ import com.fitmate.oauth.dto.authLogout.KakaoLogoutReqDto;
 import com.fitmate.oauth.dto.authLogout.NaverLogoutReqDto;
 import com.fitmate.oauth.service.OAuthLoginService;
 import com.fitmate.oauth.service.TokenService;
+import com.fitmate.oauth.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

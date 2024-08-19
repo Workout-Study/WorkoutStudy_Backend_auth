@@ -32,7 +32,7 @@ public class FitGroupService {
         log.info("fitGroupResponse: {}", fitGroupResponse);
         if (fitGroupResponse != null && fitGroupResponse.getFitMateDetails() != null) {
             return fitGroupResponse.getFitMateDetails().stream()
-                    .map(FitMateDetail::getFitMateId)
+                    .map(FitMateDetail::getFitMateUserId)
                     .filter(fitMateId -> !fitMateId.equals(sendMateId))
                     .collect(Collectors.toList());
         }

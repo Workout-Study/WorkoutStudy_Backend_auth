@@ -61,6 +61,7 @@ public class WebhookService {
         List<Long> fitMateIdsFromExternalApi = fitGroupService.getFitMateIdsFromExternalApi(fitGroupId, chatDto.getUserId());
 
         for (Long userId : fitMateIdsFromExternalApi) {
+            log.info("userId: {}", userId);
             Users users = usersRepository.findByUserId(userId);
             String token = users.getFcmToken();
             Message message = Message.builder()

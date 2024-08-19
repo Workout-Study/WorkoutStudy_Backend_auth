@@ -2,6 +2,7 @@ package com.fitmate.oauth.kafka.producer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitmate.oauth.kafka.message.UserCreateEvent;
+import com.fitmate.oauth.util.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,7 @@ public class UserCreateKafkaProducer {
     private String topicName;
 
     public void handleEvent(UserCreateEvent event) {
+        String timestamp = TimeUtils.formatInstantToTimestamp(Instant.now());
         try {
 //            byte[] serializedEvent = objectMapper.writeValueAsBytes(event);
 //            log.info("serializedEvent: {}", serializedEvent);
@@ -44,7 +46,6 @@ public class UserCreateKafkaProducer {
             kafkaTemplate.executeInTransaction(operations -> {
                 operations.send(producerRecord);
                 return true;
-
             });
         } catch (Exception e) {
             log.info("User ID = {}", event.getUserId());

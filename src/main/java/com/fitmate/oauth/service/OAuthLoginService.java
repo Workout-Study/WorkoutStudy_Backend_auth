@@ -50,6 +50,7 @@ public class OAuthLoginService {
     private final UsersRepository usersRepository;
     private final UserTokenRepository userTokenRepository;
     private final UserCreateKafkaProducer userCreateKafkaProducer;
+    private final UserService userService;
 
     @Transactional
     public LoginResDto kakaoAuthLogin(AuthLoginParams params, String fcmToken, String imageUrl) {
@@ -58,6 +59,7 @@ public class OAuthLoginService {
         Optional<Users> optionalUsers =
                 usersRepository.findByOauthIdAndOauthType(String.valueOf(authVerifyTokenVo.getId()), params.authProvider().name()); // 회원 ID, 소셜 로그인 provider
         if (optionalUsers.isPresent()) {
+            userService.validateUserNotDeleted(optionalUsers.get().getUserId());
             return loginExistingUser(fcmToken, optionalUsers, accessToken);
         }
         String oauthId = String.valueOf(authVerifyTokenVo.getId());
@@ -71,6 +73,7 @@ public class OAuthLoginService {
         Optional<Users> optionalUsers =
                 usersRepository.findByOauthIdAndOauthType(String.valueOf(authVerifyTokenVo.getResponse().getId()), params.authProvider().name());// 회원 ID, 소셜 로그인 provider
         if (optionalUsers.isPresent()) {
+            userService.validateUserNotDeleted(optionalUsers.get().getUserId());
             return loginExistingUser(fcmToken, optionalUsers, accessToken);
         }
 
@@ -107,7 +110,6 @@ public class OAuthLoginService {
                 .firstCreate(true)
                 .build();
         usersRepository.save(users);
-
 
         // JWT 토큰 발급
         String jwtAccessToken = JwtTokenUtils.generateToken(oauthId, secretKey, accessTokenExpiredTimeMs);
@@ -147,6 +149,7 @@ public class OAuthLoginService {
         log.info("jwtAccessToken = {}, jwtRefreshToken = {}", jwtAccessToken, jwtRefreshToken);
         // UserToken 수정
         // UserToken 정보 저장
+        userService.validateUserNotDeleted(userId);
         UserToken userToken = UserToken.builder()
                 .users(optionalUsers.get())
                 .authAccessToken(accessToken)

@@ -14,6 +14,10 @@ public class ResultDto {
         return new ResultDto(200, null);
     }
 
+    public static ResultDto success(String message) {
+        return new ResultDto(200, message);
+    }
+
     public static ResultDto fail(String message) {
         return new ResultDto(500, message);
     }
