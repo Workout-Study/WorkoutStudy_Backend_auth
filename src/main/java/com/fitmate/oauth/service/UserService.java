@@ -55,8 +55,11 @@ public class UserService {
         Users users = byAccessToken.get().getUsers();
         validateUserNotDeleted(users.getUserId());
         users.setNickname(request.getNickname());
-        if(!request.getImageUrl().isEmpty()){
+
+        if(request.getImageUrl() != null){
+            log.info("request ImageUrl : {}", request.getImageUrl());
             users.setImageUrl(request.getImageUrl());
+            log.info("ImageUrl = {}", users.getImageUrl());
         }
         usersRepository.save(users);
         if (users.getFirstCreate()) {
@@ -68,7 +71,7 @@ public class UserService {
             users.setFirstCreate(false);
         }
         //kafka updateUserNickName (userId, userNickname)
-        log.info("UPDATE NICKNAME = {} USERID : {}", users.getNickName(), users.getUserId());
+        log.info("UPDATE NICKNAME = {} USERID : {}, ImageURL : {}", users.getNickName(), users.getUserId(), users.getImageUrl());
         userInfoKafkaProducer.handleEvent(users.getUserId());
         return true;
     }

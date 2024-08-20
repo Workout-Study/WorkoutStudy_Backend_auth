@@ -23,7 +23,7 @@ public class Users extends BaseEntity{
     private Boolean state = Boolean.FALSE;
     @Setter
     private Boolean firstCreate;
-    @Setter
+
     @Column(length = 2000)
     private String imageUrl;
 
@@ -34,6 +34,10 @@ public class Users extends BaseEntity{
 
     public void setNickname(String nickname) {
         this.nickName = nickname;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void setUserDelete() {

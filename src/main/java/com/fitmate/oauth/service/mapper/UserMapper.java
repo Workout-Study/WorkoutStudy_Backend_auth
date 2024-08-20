@@ -11,15 +11,16 @@ import java.time.ZoneOffset;
 @UtilityClass
 public class UserMapper {
 
-	public static GetUserInfoResponse toGetUserInfoResponse(Users users) {
-		String createdAt = TimeUtils.formatTimeToCustomString(users.getCreatedAt());
-		String updatedAt = TimeUtils.formatTimeToCustomString(users.getUpdatedAt());
-		return GetUserInfoResponse.builder()
-			.userId(users.getUserId())
-			.nickname(users.getNickName())
-			.state(users.getState())
-			.createdAt(createdAt)
-			.updatedAt(updatedAt)
-			.build();
-	}
+    public static GetUserInfoResponse toGetUserInfoResponse(Users users) {
+        String createdAt = TimeUtils.formatTimeToCustomString(users.getCreatedAt());
+        String updatedAt = TimeUtils.formatTimeToCustomString(users.getUpdatedAt());
+        return GetUserInfoResponse.builder()
+                .userId(users.getUserId())
+                .nickname(users.getNickName())
+                .imageUrl(users.getImageUrl())
+                .state(users.getState())
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .build();
+    }
 }
