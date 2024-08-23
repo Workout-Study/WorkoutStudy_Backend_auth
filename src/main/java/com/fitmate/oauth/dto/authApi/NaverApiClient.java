@@ -1,17 +1,14 @@
 package com.fitmate.oauth.dto.authApi;
 
 import com.fitmate.oauth.dto.authLogin.AuthLoginParams;
-import com.fitmate.oauth.dto.authLogout.AuthLogoutParams;
-import com.fitmate.oauth.dto.authLogin.AuthVerifyTokenVo;
 import com.fitmate.oauth.dto.authLogin.NaverTokens;
 import com.fitmate.oauth.properties.OauthProperties;
-import com.fitmate.oauth.vo.AuthProvider;
-import com.fitmate.oauth.vo.naver.NaverGetProfileVo;
+import com.fitmate.oauth.dto.AuthProvider;
+import com.fitmate.oauth.dto.authLogin.NaverGetProfileVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 

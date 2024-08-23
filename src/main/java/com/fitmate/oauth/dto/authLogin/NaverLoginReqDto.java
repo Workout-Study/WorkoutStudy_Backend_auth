@@ -1,6 +1,6 @@
 package com.fitmate.oauth.dto.authLogin;
 
-import com.fitmate.oauth.vo.AuthProvider;
+import com.fitmate.oauth.dto.AuthProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

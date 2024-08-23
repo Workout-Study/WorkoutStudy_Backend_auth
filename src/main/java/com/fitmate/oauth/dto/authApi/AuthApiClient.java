@@ -1,8 +1,7 @@
 package com.fitmate.oauth.dto.authApi;
 
 import com.fitmate.oauth.dto.authLogin.AuthLoginParams;
-import com.fitmate.oauth.dto.authLogin.AuthVerifyTokenVo;
-import com.fitmate.oauth.vo.AuthProvider;
+import com.fitmate.oauth.dto.AuthProvider;
 
 public interface AuthApiClient {
     AuthProvider AuthProvider();

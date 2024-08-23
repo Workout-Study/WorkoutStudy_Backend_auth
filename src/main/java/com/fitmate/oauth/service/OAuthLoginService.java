@@ -12,12 +12,11 @@ import com.fitmate.oauth.jpa.entity.UserToken;
 import com.fitmate.oauth.jpa.entity.Users;
 import com.fitmate.oauth.jpa.repository.UserTokenRepository;
 import com.fitmate.oauth.jpa.repository.UsersRepository;
-import com.fitmate.oauth.kafka.message.UserCreateEvent;
 import com.fitmate.oauth.kafka.producer.UserCreateKafkaProducer;
 import com.fitmate.oauth.util.JwtTokenUtils;
 import com.fitmate.oauth.util.TimeUtils;
-import com.fitmate.oauth.vo.AuthProvider;
-import com.fitmate.oauth.vo.naver.NaverGetProfileVo;
+import com.fitmate.oauth.dto.AuthProvider;
+import com.fitmate.oauth.dto.authLogin.NaverGetProfileVo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.ZoneOffset;
 import java.util.Optional;
 
 @Service
