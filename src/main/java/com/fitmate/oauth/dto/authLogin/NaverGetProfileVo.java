@@ -1,4 +1,4 @@
-package com.fitmate.oauth.vo.naver;
+package com.fitmate.oauth.dto.authLogin;
 
 import lombok.Data;
 
