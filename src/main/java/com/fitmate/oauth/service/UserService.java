@@ -30,6 +30,7 @@ public class UserService {
     private final UserTokenRepository tokenRepository;
     private final UserCreateKafkaProducer userCreateKafkaProducer;
     private final UserInfoKafkaProducer userInfoKafkaProducer;
+    private final UserTokenRepository userTokenRepository;
 
     @Transactional
     public Long deleteUser(String accessToken) {
@@ -38,11 +39,14 @@ public class UserService {
         }
         Optional<UserToken> byAccessToken = tokenRepository.findByAccessToken(accessToken);
         Users users = byAccessToken.get().getUsers();
+        Long userId = users.getUserId();
         // USER DB State 변경
-        users.setUserDelete();
-        usersRepository.save(users);
+        usersRepository.deleteById(userId);
+        userTokenRepository.deleteUserTokenByAccessToken(accessToken);
+        log.info("userId = {}", users.getUserId());
+        log.info("userToken = {}", userTokenRepository.findByAccessToken(accessToken).orElse(null));
         //kafka deleteUser(userId)
-        userInfoKafkaProducer.handleEvent(users.getUserId());
+        userInfoKafkaProducer.handleEvent(userId);
         return users.getUserId();
     }
 

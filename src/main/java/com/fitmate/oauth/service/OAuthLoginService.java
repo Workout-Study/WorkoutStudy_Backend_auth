@@ -57,7 +57,6 @@ public class OAuthLoginService {
         Optional<Users> optionalUsers =
                 usersRepository.findByOauthIdAndOauthType(String.valueOf(authVerifyTokenVo.getId()), params.authProvider().name()); // 회원 ID, 소셜 로그인 provider
         if (optionalUsers.isPresent()) {
-            userService.validateUserNotDeleted(optionalUsers.get().getUserId());
             return loginExistingUser(fcmToken, optionalUsers, accessToken);
         }
         String oauthId = String.valueOf(authVerifyTokenVo.getId());
@@ -178,8 +177,8 @@ public class OAuthLoginService {
         String authUserId = claims.get("authUserId", String.class);
         log.info("authUserId = {}", authUserId);
         // UserToken 제거
-        Optional<UserToken> userToken = userTokenRepository.findByAccessToken(accessToken);
-        userToken.ifPresent(userTokenRepository::delete);
+        // Optional<UserToken> userToken = userTokenRepository.findByAccessToken(accessToken);
+        // userToken.ifPresent(userTokenRepository::delete);
         return authUserId;
     }
 }

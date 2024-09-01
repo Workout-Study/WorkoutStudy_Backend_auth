@@ -20,6 +20,7 @@ public class Users extends BaseEntity{
     private String oauthType;
     private String nickName;
     private String fcmToken;
+    @Setter
     private Boolean state = Boolean.FALSE;
     @Setter
     private Boolean firstCreate;
